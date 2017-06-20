@@ -1,5 +1,7 @@
+source("code/functions/setwd.R")
 
-biomass_calc <- function(unit.name) {
+
+biomass_calc <- function() {
   strt<-Sys.time()
   BOX_PATH <- "~/../Box Sync/EPIC-Biomass/" # Make this more reproducible later, potentially using google drive API
 
@@ -7,14 +9,8 @@ biomass_calc <- function(unit.name) {
   packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
   lapply(packages, require, character.only = TRUE)
   
-  ## This just gets you to the right working directory regardless of how you opened this script in R (hopefully)
-  if(length(grep("code",getwd()))>0){
-    setwd("../")  
-  } else if(substr(getwd(),nchar(getwd())-8,nchar(getwd()))=="Documents") {
-    setwd("drought_tree_carbon/")
-  } else {
-    setwd("~/drought_tree_carbon/")
-  } 
+  ## Get to the right working directory
+  setwd_drought()
   
   ### Open GNN LEMMA data (see script crop_LEMMA.R for where LEMMA.gri comes from)
   LEMMA <- raster(paste(BOX_PATH,"GIS Data/LEMMA_gnn_sppsz_2014_08_28/LEMMA.gri",sep=""))
@@ -32,9 +28,9 @@ biomass_calc <- function(unit.name) {
   drought1215 <- drought
   load(file=paste(BOX_PATH,"GIS Data/tempdir/drought16.Rdata",sep=""))
   
-  layer <- list.files("data/active_unit/")
-  unit <- readOGR(dsn=paste("data/active_unit/",layer,sep=""),layer=layer)
-  
+  ### LOAD UNIT POLYGON
+  load("data/active_unit/transformed/transformed.Rdata")
+  layer <-subset(list.files("data/active_unit"),list.files("data/active_unit")!="transformed")
   YEARS_NAMES <- c("1215","2016")
   
   ### Set up parallel cores for faster runs
@@ -116,7 +112,7 @@ biomass_calc <- function(unit.name) {
       key <- seq(1, nrow(results)) 
       results <- cbind(key, results)
       # Save results (to make map if you want)
-      save(results, file=paste("~/drought_tree_carbon/results/Table_",YEARS, "_",unit.name,".Rdata", sep=""))
+      save(results, file=paste("~/drought_tree_carbon/results/Table_",YEARS, "_",layer,".Rdata", sep=""))
       # Rename variables whose names were lost in the cbind
       names(results)[names(results)=="V1"] <- "PlotID"
       xy <- results[,c("x","y")]
@@ -178,7 +174,7 @@ biomass_calc <- function(unit.name) {
       ### Save spatial data frame
       live_lemma <- spdf
       setwd(paste(BOX_PATH, "/GIS Data/LEMMA_units", sep=""))
-      save(live_lemma, file=paste(unit.name,"_live.Rdata"))
+      save(live_lemma, file=paste(layer,"_live.Rdata"))
       
       ## Create a table of important output
       output <- as.data.frame(cbind(YEARS, Dead_Biomass_Mg, Dead_Trees,live.output))
@@ -201,15 +197,8 @@ biomass_calc <- function(unit.name) {
   output.final <- round(rbind(output.final,post_live_number,perc_loss_trees))
   row.names(output.final) <- c("Dead tree biomass (metric tons)","Number of dead trees","Pre-drought live tree biomass (metric tons)","Pre-drought number of live trees","Forested area (ha)","Post-drought live tree biomass (metric tons)","Percent loss of live tree biomass","Post-drought number of live trees","Percent loss of live trees") 
 
-  
-  if(length(grep("code",getwd()))>0){
-    setwd("../")  
-  } else if(substr(getwd(),nchar(getwd())-8,nchar(getwd()))=="Documents") {
-    setwd("drought_tree_carbon/")
-  } else {
-    setwd("~/drought_tree_carbon/")
-  } 
-  write.csv(output.final, file=paste("results/",unit.name,".csv",sep=""))
+  setwd_drought()
+  write.csv(output.final, file=paste("results/",layer,".csv",sep=""))
   return(output.final)
 }
 

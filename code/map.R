@@ -58,12 +58,8 @@ for(j in 1:2){
   for(i in 1:length(unit.names)) {
     YEAR <- YEARS[j]
     UNIT <- unit.names[i]
-    #load(file=paste(UNIT,"_raster_25_",YEAR,".Rdata",sep=""))
-    #assign(paste(UNIT,"_raster_",YEAR,sep=""), raster.mask)
+
     load(file=paste("Table_",YEAR,"_",UNIT,"_25_CRM.Rdata",sep=""))
-    #xy <- results[,c("x","y")]
-    #spdf <- SpatialPointsDataFrame(coords=xy, data = results, proj4string = crs(LEMMA_units))
-    #assign(paste(UNIT,"_spdf_",YEAR,sep=""), spdf)
     assign(paste(UNIT,"_table_",YEAR,sep=""),results)
   }
 }

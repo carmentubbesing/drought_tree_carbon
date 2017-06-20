@@ -69,8 +69,6 @@ LEMMA.units <- foreach(i=inputs, .combine = rbind, .packages = c('raster','rgeos
   pcoords <- cbind(clip2@data@values, coordinates(clip2)) # save the coordinates of each pixel
   pcoords <- as.data.frame(pcoords)
   pcoords <- na.omit(pcoords) # get rid of NAs in coordinates table (NAs are from empty cells in box around polygon)
-  #ext <- extract(clip2, single) # extracts data from the raster - each extracted value is the FIA plot # of the raster cell, which corresponds to detailed data in the attribute table of LEMMA
-  #tab <- lapply(ext, table) # creates a table that counts how many of each raster value there are in the polygon
   counted <- pcoords %>% count(V1)
   mat <- as.data.frame(counted)
   s <- sum(mat[2]) # Counts total raster cells the polygon - this is different from length(clip2tg) because it doesn't include NAs
