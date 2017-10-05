@@ -1,5 +1,3 @@
-source("code/functions/setwd.R")
-
 
 biomass_calc <- function() {
   strt<-Sys.time()
@@ -7,11 +5,8 @@ biomass_calc <- function() {
   packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
   lapply(packages, require, character.only = TRUE)
   
-  ## Get to the right working directory
-  setwd_drought()
-  
   ### Open GNN LEMMA data (see script crop_LEMMA.R for where LEMMA.gri comes from)
-  LEMMA <- raster("../data/LEMMA.gri",sep="")
+  LEMMA <- raster("../../LEMMA.gri")
   
   ### Open LEMMA PLOT data
   plots <- read.csv("../data/SPPSZ_ATTR_LIVE.csv")
@@ -22,13 +17,13 @@ biomass_calc <- function() {
                     "TREEPLBA","QMD_DOM")]
   
   ### OPEN DROUGHT MORTALITY POLYGONS (see script transform_ADS.R for where "drought" comes from)
-  load(file="../data/drought.Rdata")
+  load(file="../../drought.Rdata")
   drought1215 <- drought
-  load(file="../data/drought.Rdata")
+  load(file="../../drought16.Rdata")
   
   ### LOAD UNIT POLYGON
   load("../data/active_unit/transformed/transformed.Rdata")
-  layer <-subset(list.files("data/active_unit"),list.files("data/active_unit")!="transformed")
+  layer <-subset(list.files("../data/active_unit"),list.files("../data/active_unit")!="transformed")
   YEARS_NAMES <- c("1215","2016")
   
   ### Set up parallel cores for faster runs
@@ -54,7 +49,7 @@ biomass_calc <- function() {
     drought <- crop(drought_bu, extent(unit)+c(-10000,10000,-10000,10000))
     inputs=1:nrow(drought)
     
-    results <- foreach(i=inputs, .combine = rbind, .packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling="remove") %dopar% {
+    results <- foreach(i=inputs, .combine = rbind,.packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling="remove") %dopar% {
         single <- drought[i,] # select one polygon
         clip1 <- crop(LEMMA, extent(single)) # crop LEMMA GLN data to the size of that polygon
         # fit the cropped LEMMA data to the shape of the polygon, unless the polygon is too small to do so
@@ -110,7 +105,7 @@ biomass_calc <- function() {
       key <- seq(1, nrow(results)) 
       results <- cbind(key, results)
       # Save results (to make map if you want)
-      save(results, file=paste("~/drought_tree_carbon/results/Table_",YEARS, "_",layer,".Rdata", sep=""))
+      save(results, file=paste("../results/Table_",YEARS, "_",layer,".Rdata", sep=""))
       # Rename variables whose names were lost in the cbind
       names(results)[names(results)=="V1"] <- "PlotID"
       xy <- results[,c("x","y")]
@@ -171,13 +166,13 @@ biomass_calc <- function() {
       
       ### Save spatial data frame
       live_lemma <- spdf
-      setwd(paste(BOX_PATH, "/GIS Data/LEMMA_units", sep=""))
-      save(live_lemma, file=paste(layer,"_live.Rdata"))
+      save(live_lemma, file=paste("../results/",layer,"_live.Rdata"))
       
       ## Create a table of important output
       output <- as.data.frame(cbind(YEARS, Dead_Biomass_Mg, Dead_Trees,live.output))
       output.full <- rbind(output.full, output) 
-      print(Sys.time()-strt)
+      print(noquote(paste("Calculating for years", YEARS, "took a")))
+            print(Sys.time()-strt)
       
   }
   output.full<- as.data.frame(sapply(output.full,as.numeric))
@@ -195,8 +190,7 @@ biomass_calc <- function() {
   output.final <- round(rbind(output.final,post_live_number,perc_loss_trees))
   row.names(output.final) <- c("Dead tree biomass (metric tons)","Number of dead trees","Pre-drought live tree biomass (metric tons)","Pre-drought number of live trees","Forested area (ha)","Post-drought live tree biomass (metric tons)","Percent loss of live tree biomass","Post-drought number of live trees","Percent loss of live trees") 
 
-  setwd_drought()
-  write.csv(output.final, file=paste("results/",layer,".csv",sep=""))
+  write.csv(output.final, file=paste("../results/",layer,".csv",sep=""))
   return(output.final)
 }
 
