@@ -27,8 +27,9 @@ This is a spinoff of github.com/WoodResourcesGroup/EPIC_AllPowerLabs/tree/master
     3.  drought.Rdata (30 MB)
     4.  drought16.Rdata (15 MB)
 
-    -   Note: It will take several minutes or longer to download these files from Google Drive, as they are large.
-    -   Note: Make sure these files are in the same folder as `drought_tree_carbon-master` but are *not* **within** `drought_tree_carbon-master`. For example, if you created a directory called `biomass_calculations` such that your file structure is `biomass_calculations/drought_tree_carbon-master`, the data files from Google Drive should be in `biomass_calculations`, so you have `biomass_calculations/LEMMA.gri`, `biomass_calculations/LEMMA.grd`, etc.
+-   Note: It will take several minutes or longer to download these files from Google Drive, as they are large.
+-   Note: Make sure these files are in the same folder as `drought_tree_carbon-master` but are *not* **within** `drought_tree_carbon-master`. 
+    - For example, if you created a directory called `biomass_calculations` such that your file structure is `biomass_calculations/drought_tree_carbon-master`, the data files from Google Drive should be in `biomass_calculations`, so you have `biomass_calculations/LEMMA.gri`, `biomass_calculations/LEMMA.grd`, etc.
 
 4.  Obtain a shapefile of the boundary of the land area you're interested in. The shapefile can have any coordinate reference system. Place a folder containing your shapefile into the directory `drought_tree_carbon-master/data/active_unit`.
     -   Note: The folder containing the shapefile and shapefile itself can be called whatever you want, but be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
