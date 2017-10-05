@@ -3,8 +3,6 @@ source("code/functions/setwd.R")
 
 biomass_calc <- function() {
   strt<-Sys.time()
-  BOX_PATH <- "~/../Box Sync/EPIC-Biomass/" # Make this more reproducible later, potentially using google drive API
-
     ### INSTALL PACKAGES IF NEEDED
   packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
   lapply(packages, require, character.only = TRUE)
@@ -13,10 +11,10 @@ biomass_calc <- function() {
   setwd_drought()
   
   ### Open GNN LEMMA data (see script crop_LEMMA.R for where LEMMA.gri comes from)
-  LEMMA <- raster(paste(BOX_PATH,"GIS Data/LEMMA_gnn_sppsz_2014_08_28/LEMMA.gri",sep=""))
+  LEMMA <- raster("../data/LEMMA.gri",sep="")
   
   ### Open LEMMA PLOT data
-  plots <- read.csv("data/SPPSZ_ATTR_LIVE.csv")
+  plots <- read.csv("../data/SPPSZ_ATTR_LIVE.csv")
   land_types <- unique(plots$ESLF_NAME)
   for_types <- unique(plots$FORTYPBA)[2:932]
   plots <- plots[,c("VALUE","TPH_GE_3","TPH_GE_25", "TPH_GE_50",
@@ -24,12 +22,12 @@ biomass_calc <- function() {
                     "TREEPLBA","QMD_DOM")]
   
   ### OPEN DROUGHT MORTALITY POLYGONS (see script transform_ADS.R for where "drought" comes from)
-  load(file=paste(BOX_PATH,"GIS Data/tempdir/drought.Rdata",sep=""))
+  load(file="../data/drought.Rdata")
   drought1215 <- drought
-  load(file=paste(BOX_PATH,"GIS Data/tempdir/drought16.Rdata",sep=""))
+  load(file="../data/drought.Rdata")
   
   ### LOAD UNIT POLYGON
-  load("data/active_unit/transformed/transformed.Rdata")
+  load("../data/active_unit/transformed/transformed.Rdata")
   layer <-subset(list.files("data/active_unit"),list.files("data/active_unit")!="transformed")
   YEARS_NAMES <- c("1215","2016")
   
