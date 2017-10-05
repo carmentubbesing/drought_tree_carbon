@@ -17,9 +17,9 @@ System Requirements
 Steps to calculating biomass loss on any management unit
 --------------------------------------------------------
 
-2.  Go to <https://github.com/carmentubbesing/drought_tree_carbon> and download the entire repository by clicking the big green button and selecting "Download ZIP". The newly downloaded folder will be called `drought_tree_carbon-master`. Create a new folder anywhere on your computer and place the entire `drought_tree_carbon-master` directory into it. 
+1.  Go to <https://github.com/carmentubbesing/drought_tree_carbon> and download the entire repository by clicking the big green button and selecting "Download ZIP". The newly downloaded folder will be called `drought_tree_carbon-master`. Create a new folder anywhere on your computer and place the entire `drought_tree_carbon-master` directory into it. 
 
-3.  Download the files below from <https://drive.google.com/drive/u/1/folders/0B81g0LRLmd0fVXlfZDFfS2VQRDg> and place them in the same folder as the github repository
+2.  Download the files below from <https://drive.google.com/drive/u/1/folders/0B81g0LRLmd0fVXlfZDFfS2VQRDg> and place them in the same folder as the github repository
     1.  LEMMA.gri (7.8 GB)
     2.  LEMMA.grd (35 MB)
     3.  drought.Rdata (30 MB)
