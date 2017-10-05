@@ -37,6 +37,6 @@ Steps to calculating biomass loss on any management unit
 
 3.  Make sure your working directory is set to `drought_tree_carbon-master/code`.
 
-4.  Hit run and wait a few minutes (up to an hour for large shapefiles).
+4.  Run all lines of code in `GET_RESULTS.R` and wait a few minutes (up to an hour for large shapefiles).
 
 5.  Your results will appear as a table in a .csv file in the Results folder.
