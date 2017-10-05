@@ -28,11 +28,13 @@ Steps to calculating biomass loss on any management unit
 
     -   Note: Make sure these files are in the same folder as `drought_tree_carbon-master` but are *not* **within** `drought_tree_carbon-master`. For example, if you created a directory called `biomass_calculations` such that your file structure is `biomass_calculations/drought_tree_carbon-master`, the data files from Google Drive should be in `biomass_calculations`, so you have `biomass_calculations/LEMMA.gri`, `biomass_calculations/LEMMA.grd`, etc.
 
-4.  Make sure the land area you're interested in has a shapefile of its boundary. Place a folder containing your shapefile into the directory `drought_tree_carbon-master/data/active_unit`.
-    -   Note: The folder and shapefile can be called whatever you want but be sure there are no extra files in the folder. If you run the calculations for multiple shapefiles, this means you will need to delete the shapefile from the `active_unit` folder between each calculation.
+4.  Obtain a shapefile of the boundary of the land area you're interested in. The shapefile can have any coordinate reference system. Place a folder containing your shapefile into the directory `drought_tree_carbon-master/data/active_unit`.
+    -   Note: The folder containing the shapefile and shapefile itself can be called whatever you want but be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
 
-5.  Open the R file `code/GET_RESULTS.R`
+5.  Open the R file `code/GET_RESULTS.R`. 
 
-6.  Hit run and wait a few minutes
+6.  Make sure your working directory is set to `drought_tree_carbon-master/code`
 
-7.  Your results will appear in a .csv file in the Results folder
+7.  Hit run and wait a few minutes
+
+8.  Your results will appear in a .csv file in the Results folder
