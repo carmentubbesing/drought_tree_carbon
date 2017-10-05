@@ -7,16 +7,15 @@ Calculate the biomass of trees that have died in recent drought/insect mortality
 
 This is a spinoff of github.com/WoodResourcesGroup/EPIC\_AllPowerLabs/tree/master/Biomass
 
-Steps to calculating biomass loss on any management unit
+System Requirements
 --------------------------------------------------------
 
-1.  Make sure the following R packages are installed on your computer:
-    -   doParallel
-    -   foreach
-    -   dplyr
-    -   tidyr
-    -   rgdal
-    -   raster
+1. You must have a PC, not Mac
+2. You must have R installed
+3. You must have 15 free GB on your hard drive 
+
+Steps to calculating biomass loss on any management unit
+--------------------------------------------------------
 
 2.  Go to <https://github.com/carmentubbesing/drought_tree_carbon> and download the entire repository by clicking the big green button and selecting "Download ZIP". The newly downloaded folder will be called `drought_tree_carbon-master`. Create a new folder anywhere on your computer and place the entire `drought_tree_carbon-master` directory into it. 
 
