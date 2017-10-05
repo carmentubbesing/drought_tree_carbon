@@ -1,7 +1,6 @@
 
 biomass_calc <- function() {
   strt<-Sys.time()
-    ### INSTALL PACKAGES IF NEEDED
   packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
   lapply(packages, require, character.only = TRUE)
   
