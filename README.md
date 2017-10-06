@@ -39,4 +39,4 @@ Steps to calculating biomass loss on any management unit
 
 4.  Run all lines of code in `GET_RESULTS.R` and wait a few minutes (up to an hour for large shapefiles).
 
-5.  Your results will appear as a table in a .csv file in the Results folder.
+5.  Your results will appear as a table (.csv file) and map (.jpeg) in the Results folder.
