@@ -1,28 +1,37 @@
 
 biomass_calc <- function() {
   strt<-Sys.time()
+  
+  ### Load packages
   packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
   lapply(packages, require, character.only = TRUE)
   
-  ### Open GNN LEMMA data (see script crop_LEMMA.R for where LEMMA.gri comes from)
+  ### Open LEMMA GNN data
   LEMMA <- raster("../../LEMMA.gri")
   
-  ### Open LEMMA PLOT data
-  plots <- read.csv("../data/SPPSZ_ATTR_LIVE.csv")
+  ### Open LEMMA PLOT data and filter to the variables of interest
+  
+  strt<-Sys.time()
+  print(Sys.time()-strt)
+
+  load("../data/SPPZ_ATTR_LIVE.Rdata")
+  
   land_types <- unique(plots$ESLF_NAME)
   for_types <- unique(plots$FORTYPBA)[2:932]
   plots <- plots[,c("VALUE","TPH_GE_3","TPH_GE_25", "TPH_GE_50",
                     "BPH_GE_3_CRM","BPH_GE_25_CRM","BPH_GE_50_CRM", "FORTYPBA", "ESLF_NAME", 
                     "TREEPLBA","QMD_DOM")]
   
-  ### OPEN DROUGHT MORTALITY POLYGONS (see script transform_ADS.R for where "drought" comes from)
+  ### Open ADS drought mortality polygons
   load(file="../../drought.Rdata")
   drought1215 <- drought
   load(file="../../drought16.Rdata")
   
-  ### LOAD UNIT POLYGON
+  ### Load management unit polygon
   load("../data/transformed/transformed.Rdata")
   layer <-list.files("../data/active_unit")
+  
+  ### Define years
   YEARS_NAMES <- c("1215","2016")
   
   ### Set up parallel cores for faster runs
@@ -30,10 +39,12 @@ biomass_calc <- function() {
   no_cores <- detectCores() - 1 # Use all but one core on your computer
   c1 <- makeCluster(no_cores)
   
+  ### Calculate dead biomass
   output.full <- data.frame()
-  ### FIRST CALCULATE DEAD BIOMASS
+  
   for(k in 1:2) {
-    ## Select year(s)
+    
+    ## Select year(s) and corresponding ADS polygons 
     YEARS <- YEARS_NAMES[k]
     if(YEARS=="1215") {
       drought <- subset(drought, drought$RPT_YR %in% c(2012,2013,2014,2015))
@@ -44,21 +55,33 @@ biomass_calc <- function() {
     ## Establish parallel session
     registerDoParallel(c1)
     
-    ## Function that does the bulk of the analysis
+    ## Crop ADS data to the extent of the management unit
     drought <- crop(drought_bu, extent(unit)+c(-10000,10000,-10000,10000))
+    
+    ## Define input to the foreach loop
     inputs=1:nrow(drought)
     
+    ## Foreach loop using parallel cores:
     results <- foreach(i=inputs, .combine = rbind,.packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling="remove") %dopar% {
-        single <- drought[i,] # select one polygon
-        clip1 <- crop(LEMMA, extent(single)) # crop LEMMA GLN data to the size of that polygon
-        # fit the cropped LEMMA data to the shape of the polygon, unless the polygon is too small to do so
+        
+      # select one polygon
+        single <- drought[i,] 
+        
+      # crop LEMMA GLN data to the size of that polygon
+        clip1 <- crop(LEMMA, extent(single)) 
+        
+      # fit the cropped LEMMA data to the shape of the polygon (mask), unless the polygon is too small to do so
         if(length(clip1) >= 4){
           clip2 <- mask(clip1, single)
         } else 
           clip2 <- clip1
-        pcoords <- cbind(clip2@data@values, coordinates(clip2)) # save the coordinates of each pixel
+        
+      # save the coordinates of each pixel
+        pcoords <- cbind(clip2@data@values, coordinates(clip2)) 
         pcoords <- as.data.frame(pcoords)
-        pcoords <- na.omit(pcoords) # get rid of NAs in coordinates table (NAs are from empty cells in box around polygon)
+        
+      # get rid of NAs in coordinates table (NAs are from empty cells in box around polygon)
+        pcoords <- na.omit(pcoords) 
         #ext <- extract(clip2, single) # extracts data from the raster - each extracted value is the FIA plot # of the raster cell, which corresponds to detailed data in the attribute table of LEMMA
         #tab <- lapply(ext, table) # creates a table that counts how many of each raster value there are in the polygon
         counted <- pcoords %>% count(V1)
