@@ -84,6 +84,6 @@ map_figure <- (ggplot()+
   labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016,", layer))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
   north(data = unit.bound, location = "bottomleft", scale=.05,symbol=12)+
-  scalebar(data=unit.bound, dist = 1))
+  scalebar(data=unit.bound, dist = 10))
 return(map_figure)
 }
