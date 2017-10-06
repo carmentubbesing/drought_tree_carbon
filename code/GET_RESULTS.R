@@ -7,7 +7,7 @@ source("map_new_unit.R")
 transform()
 biomass_calc()
 
-layer <-subset(list.files("../data/active_unit"),list.files("../data/active_unit")!="transformed")
+layer <-list.files("../data/active_unit")
 
 jpeg(paste("../results/map_", layer,".jpeg", sep = ""))
 map()

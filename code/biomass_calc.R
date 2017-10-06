@@ -21,8 +21,8 @@ biomass_calc <- function() {
   load(file="../../drought16.Rdata")
   
   ### LOAD UNIT POLYGON
-  load("../data/active_unit/transformed/transformed.Rdata")
-  layer <-subset(list.files("../data/active_unit"),list.files("../data/active_unit")!="transformed")
+  load("../data/transformed/transformed.Rdata")
+  layer <-list.files("../data/active_unit")
   YEARS_NAMES <- c("1215","2016")
   
   ### Set up parallel cores for faster runs
