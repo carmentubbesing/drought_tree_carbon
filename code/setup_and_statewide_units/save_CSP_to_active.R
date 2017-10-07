@@ -22,3 +22,11 @@ CSP <- st_p[1,]
 setwd("~/drought_tree_carbon/data/active_unit/")
 writeOGR(obj=CSP, dsn="CSP",layer="CSP",driver="ESRI Shapefile",overwrite_layer=T)
 
+
+### Mountain Home
+MH <- readOGR(dsn = "Mtn_home", layer = "Mtn_home_new")
+plot(MH)
+plot(MH[3,], add = T, col = "red")
+MH_subsection <- MH[3,]
+setwd("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
+writeOGR(obj=MH_subsection, dsn="MH_subsection",layer="MH_subsection",driver="ESRI Shapefile",overwrite_layer=T)

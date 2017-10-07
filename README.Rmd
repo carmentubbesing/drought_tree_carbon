@@ -36,6 +36,8 @@ This is a spinoff of github.com/WoodResourcesGroup/EPIC_AllPowerLabs/tree/master
     -   The folder and shapefile can be named anything, but keep in mind that the folder name will be used in labeling the output tables and map.
     -   Note: Be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
 
+4. Run the script called "install_packages". You only need to do this once. It may require restarting R.
+
 5.  Open the R file `code/GET_RESULTS.R`. 
 
 6.  Make sure your working directory is set to `drought_tree_carbon-master/code`.

@@ -13,11 +13,11 @@ map <- function(){
 YEARS <- c("1215","2016")
 
 ### OPEN LIVE BIOMASS
-layer <-subset(list.files("../data/active_unit"),list.files("../data/active_unit")!="transformed")
+layer <-list.files("../data/active_unit")
 load(paste("../results/",layer,"_live.Rdata"))
 
 ### LOAD MGMT UNIT BOUNDARIES
-load("../data/active_unit/transformed/transformed.Rdata")
+load("../data/transformed/transformed.Rdata")
 unit@data$id = rownames(unit@data)
 unit.points = fortify(unit, region="id")
 unit.bound = full_join(unit.points, unit@data, by="id")
@@ -55,8 +55,9 @@ merge <- merge[,c("x","y","BPH_GE_25_CRM","D_BM_kgha")]
 merge$Perc_D <- merge$D_BM_kgha/merge$BPH_GE_25_CRM
 assign(paste(layer),merge)
 cols <- c('#a1d99b','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026') # define colors
+scale_res <- round((extent(get(layer))[2]-extent(get(layer))[1])/10000*4, digits =0)
 
-map_figure <- (ggplot()+
+map_figure <- ggplot()+
   geom_tile(data=get(layer),aes(x=x,y=y,fill = Perc_D, color=Perc_D))+
   scale_colour_gradientn(colours = cols,
                          breaks=c(0,.05,.25,.5,.75,1),
@@ -84,6 +85,8 @@ map_figure <- (ggplot()+
   labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016,", layer))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
   north(data = unit.bound, location = "bottomleft", scale=.05,symbol=12)+
-  scalebar(data=unit.bound, dist = 10))
+  scalebar(data=unit.bound, dist = scale_res)
+  
+map_figure
 return(map_figure)
 }

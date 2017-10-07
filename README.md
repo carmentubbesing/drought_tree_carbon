@@ -30,13 +30,17 @@ Steps to calculating biomass loss on any management unit
 -   Note: Make sure these files are in the same folder as `drought_tree_carbon-master` but are *not* **within** `drought_tree_carbon-master`.
     -   For example, if you created a directory called `biomass_calculations` such that your file structure is `biomass_calculations/drought_tree_carbon-master`, the data files from Google Drive should be in `biomass_calculations`, so you have `biomass_calculations/LEMMA.gri`, `biomass_calculations/LEMMA.grd`, etc.
 
-1.  Obtain a shapefile of the boundary of the land area you're interested in. The shapefile can have any coordinate reference system. Place a folder containing your shapefile into the directory `drought_tree_carbon-master/data/active_unit`.
-    -   Note: The folder containing the shapefile and shapefile itself can be called whatever you want, but be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
+1.  Obtain a shapefile of the boundary of the land area you're interested in. Place a folder containing your shapefile into the directory `drought_tree_carbon-master/data/active_unit`.
+    -   The shapefile can have any coordinate reference system.
+    -   The folder and shapefile can be named anything, but keep in mind that the folder name will be used in labeling the output tables and map.
+    -   Note: Be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
 
-2.  Open the R file `code/GET_RESULTS.R`.
+2.  Run the script called "install\_packages". You only need to do this once.
 
-3.  Make sure your working directory is set to `drought_tree_carbon-master/code`.
+3.  Open the R file `code/GET_RESULTS.R`.
 
-4.  Run all lines of code in `GET_RESULTS.R` and wait a few minutes (up to an hour for large shapefiles).
+4.  Make sure your working directory is set to `drought_tree_carbon-master/code`.
 
-5.  Your results will appear as a table (.csv file) and map (.jpeg) in the Results folder.
+5.  Run all lines of code in `GET_RESULTS.R` and wait a few minutes (up to an hour for large shapefiles).
+
+6.  Your results will appear as a table (.csv file) and map (.jpeg) in the Results folder.

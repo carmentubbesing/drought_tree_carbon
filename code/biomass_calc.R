@@ -1,5 +1,10 @@
 
 biomass_calc <- function() {
+  ### Load management unit polygon
+  load("../data/transformed/transformed.Rdata")
+  layer <-list.files("../data/active_unit")
+  
+  
   strt<-Sys.time()
   
   ### Load packages
@@ -9,30 +14,35 @@ biomass_calc <- function() {
   ### Open LEMMA GNN data
   LEMMA <- raster("../../LEMMA.gri")
   
-  ### Open LEMMA PLOT data and filter to the variables of interest
-  
-  strt<-Sys.time()
-  print(Sys.time()-strt)
-
+  ### Open LEMMA PLOT data 
   load("../data/SPPZ_ATTR_LIVE.Rdata")
-  
   land_types <- unique(plots$ESLF_NAME)
-  for_types <- unique(plots$FORTYPBA)[2:932]
-  plots <- plots[,c("VALUE","TPH_GE_3","TPH_GE_25", "TPH_GE_50",
-                    "BPH_GE_3_CRM","BPH_GE_25_CRM","BPH_GE_50_CRM", "FORTYPBA", "ESLF_NAME", 
-                    "TREEPLBA","QMD_DOM")]
   
   ### Open ADS drought mortality polygons
   load(file="../../drought.Rdata")
   drought1215 <- drought
   load(file="../../drought16.Rdata")
   
-  ### Load management unit polygon
-  load("../data/transformed/transformed.Rdata")
-  layer <-list.files("../data/active_unit")
+  ### Save to global environment
+  drought1215<<-drought1215
+  drought16<<-drought16
+  LEMMA<<-LEMMA
+  plots<<-plots
   
+  ### Print time 
+  print(noquote(paste("Loading data")))
+  print(Sys.time()-strt)
+  
+  
+  packages <- c("dplyr","rgdal","raster","tidyr","rgeos","doParallel")
+  lapply(packages, require, character.only = TRUE)
+  strt.beginning <-Sys.time()
+  strt<-Sys.time()
   ### Define years
   YEARS_NAMES <- c("1215","2016")
+  
+  ### Define forest types
+  for_types <- unique(plots$FORTYPBA)[2:932]
   
   ### Set up parallel cores for faster runs
   detectCores()
@@ -45,24 +55,23 @@ biomass_calc <- function() {
   for(k in 1:2) {
     
     ## Select year(s) and corresponding ADS polygons 
-    YEARS <- YEARS_NAMES[k]
-    if(YEARS=="1215") {
-      drought <- subset(drought, drought$RPT_YR %in% c(2012,2013,2014,2015))
-    } else 
-      drought <- drought16
-    drought_bu <- drought
+      YEARS <- YEARS_NAMES[k]
+      if(YEARS=="1215") {
+        drought <- drought1215
+      } else 
+        drought <- drought16
     
     ## Establish parallel session
-    registerDoParallel(c1)
+      registerDoParallel(c1)
     
     ## Crop ADS data to the extent of the management unit
-    drought <- crop(drought_bu, extent(unit)+c(-10000,10000,-10000,10000))
+      drought <- crop(drought, extent(unit)+c(-10000,10000,-10000,10000))
     
     ## Define input to the foreach loop
-    inputs=1:nrow(drought)
+      inputs=1:nrow(drought)
     
     ## Foreach loop using parallel cores:
-    results <- foreach(i=inputs, .combine = rbind,.packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling="remove") %dopar% {
+      results <- foreach(i=inputs, .combine = rbind,.packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling="remove") %dopar% {
         
       # select one polygon
         single <- drought[i,] 
@@ -76,39 +85,51 @@ biomass_calc <- function() {
         } else 
           clip2 <- clip1
         
-      # save the coordinates of each pixel
-        pcoords <- cbind(clip2@data@values, coordinates(clip2)) 
-        pcoords <- as.data.frame(pcoords)
+      # save the coordinates of each pixel; get rid of NAs in coordinates table (NAs are from empty cells in box around polygon)
+        pcoords <- na.omit(as.data.frame(cbind(clip2@data@values, coordinates(clip2))))
         
-      # get rid of NAs in coordinates table (NAs are from empty cells in box around polygon)
-        pcoords <- na.omit(pcoords) 
-        #ext <- extract(clip2, single) # extracts data from the raster - each extracted value is the FIA plot # of the raster cell, which corresponds to detailed data in the attribute table of LEMMA
-        #tab <- lapply(ext, table) # creates a table that counts how many of each raster value there are in the polygon
-        counted <- pcoords %>% count(V1)
-        mat <- as.data.frame(counted)
-        s <- sum(mat[2]) # Counts total raster cells the polygon - this is different from length(clip2tg) because it doesn't include NAs
-        freq <- (mat[2]/s) # gives fraction of polygon occupied by each plot type. Adds up to 1 for each polygon.
-        mat2 <- cbind(mat, freq) # creates table with FIA plot IDs in polygon, number of each, and relative frequency of each
+      # count how many of each FIA plot there are   
+        mat <- as.data.frame(pcoords %>% count(V1))
+      
+      # Count total raster cells the polygon - this is different from length(clip2tg) because it doesn't include NAs
+        s <- sum(mat[2]) 
+        
+      # Find fraction of polygon occupied by each plot type. Adds up to 1 for each polygon.
+        freq <- (mat[2]/s) 
+        
+      # create table with FIA plot IDs in polygon, number of each, and relative frequency of each
+        mat2 <- cbind(mat, freq) 
         colnames(mat2)[3] <- "freq"
+        
+      # merge frequency table with plot data
         merge <- merge(mat2, plots, by.x = "V1", by.y="VALUE")
         
-        # Find biomass per pixel using biomass per tree and estimated number of trees
-        pmerge <- merge(pcoords, merge, by ="V1") # pmerge has a line for every pixel
-        # problem here
-        tot_NO <- single@data$NO_TREES1 # Total number of trees in the polygon
-        pmerge <- subset(pmerge, pmerge$FORTYPBA %in% for_types)
-        pmerge$live.ratio <- (pmerge$TPH_GE_25)/sum(pmerge$TPH_GE_25, na.rm=T)
-        pmerge$relNO <- tot_NO*pmerge$live.ratio
-        pmerge$BPH_abs <- pmerge$BPH_GE_25_CRM*(900/10000)
-        pmerge$BM_tree_kg <- pmerge$BPH_GE_25_CRM/pmerge$TPH_GE_25
+      # reformat data so there's a line for every pixel
+        pmerge <- full_join(pcoords, merge, by ="V1") 
+        
+      # find total number of trees in the polygon
+        tot_NO <- single@data$NO_TREES1 
+        
+      # filter to only forested forest types, then calculate biomass loss
+        pmerge <- pmerge %>% 
+          dplyr::filter(FORTYPBA %in% for_types) %>% 
+          dplyr::mutate(live.ratio = TPH_GE_25/sum(TPH_GE_25), na.rm=T) %>% 
+          dplyr::mutate(relNO = tot_NO*live.ratio) %>% 
+          dplyr::mutate(BPH_abs = BPH_GE_25_CRM*(900/10000)) %>% 
+          dplyr::mutate(BM_tree_kg = BPH_GE_25_CRM/TPH_GE_25) 
         pmerge$BM_tree_kg[is.na(pmerge$BM_tree_kg)] <- 0
+        
+      # drop estimated dead biomass per pixel down to the total live biomass if it's higher
         for(l in 1:nrow(pmerge)) {
           if(pmerge[l,"TPH_GE_25"]*(900/10000)<pmerge[l,"relNO"]) {
             pmerge[l,"D_BM_kg"] <- pmerge[l,"BPH_abs"] # I add the 0.01 to make it easier to tell these plots later
           } else pmerge[l,"D_BM_kg"] <- pmerge[l,"relNO"]*pmerge[l,"BM_tree_kg"]
         }
+        
+      # create a column marking whether the pixel's dead biomass was truncated as described above 
         pmerge$trunc <- ifelse(pmerge$D_BM_kg==pmerge$BPH_GE_25_CRM*(900/10000) & pmerge$D_BM_kg!=0, 1,0)
-        # Create vectors that are the same length as pmerge to combine into final table:
+        
+      # Create vectors that are the same length as pmerge to combine into final table:
         Pol.ID <- rep(i, nrow(pmerge)) # create a Polygon ID
         D_Pol_BM_kg <- rep(sum(pmerge$D_BM_kg), nrow(pmerge)) # Sum biomass over the entire polygon 
         Pol.x <- rep(gCentroid(single)@coords[1], nrow(pmerge)) # Find coordinates of center of polygon
@@ -123,26 +144,26 @@ biomass_calc <- function() {
                        Pol.Shap_Ar,Pol.Pixels, D_BM_kgha) #    
         return(final)
     }
-      # Create a key for each pixel (row)
+    
+    # Create a key for each pixel (row)
       key <- seq(1, nrow(results)) 
       results <- cbind(key, results)
-      # Save results (to make map if you want)
+      
+    # Save results (to make map)
       save(results, file=paste("../results/Table_",YEARS, "_",layer,".Rdata", sep=""))
-      # Rename variables whose names were lost in the cbind
+      
+    # Rename variables whose names were lost in the cbind
       names(results)[names(results)=="V1"] <- "PlotID"
       xy <- results[,c("x","y")]
       spdf <- SpatialPointsDataFrame(coords=xy, data = results, proj4string = crs(LEMMA))
-      ### Save version masked to just the management unit
-      ## Convert to raster to more easily crop and sum
-      xyz <- as.data.frame(cbind(spdf@data$x, spdf@data$y, spdf@data$D_BM_kg, spdf@data$relNO))
-      raster <- rasterFromXYZ(xyz, crs = crs(spdf))
-      raster.mask <- mask(raster, unit)
-      Dead_Biomass_Mg <- sum(na.omit(raster.mask$V3@data@values))/1000
-      Dead_Trees <- sum(na.omit(raster.mask$V4@data@values))
-  
-      #####live_lemma 
-      #######
-        
+      in_unit <- over(unit, spdf, returnList = T)[[1]]
+      spdf_in_unit <- spdf[key %in% in_unit$key,]
+      Dead_Biomass_Mg <- sum(spdf_in_unit@data$D_BM_kg)/1000
+      Dead_Trees <- sum(spdf_in_unit@data$relNO)
+      print(noquote(paste("Calculating dead biomass for years", YEARS)))
+      print(Sys.time()-strt)
+      ##### Calculate live biomass directly from LEMMA data 
+      strt<-Sys.time()
         clip1 <- crop(LEMMA, extent(unit)) # crop LEMMA GLN data to the size of that polygon
         # fit the cropped LEMMA data to the shape of the polygon, unless the polygon is too small to do so
         clip2 <- mask(clip1, unit) #takes a long time for SNF for some reason
@@ -193,12 +214,12 @@ biomass_calc <- function() {
       ## Create a table of important output
       output <- as.data.frame(cbind(YEARS, Dead_Biomass_Mg, Dead_Trees,live.output))
       output.full <- rbind(output.full, output) 
-      print(noquote(paste("Calculating for years", YEARS, "took a")))
+      print(noquote(paste("Calculating live biomass for years", YEARS)))
             print(Sys.time()-strt)
       
   }
-  output.full<- as.data.frame(sapply(output.full,as.numeric))
-  end_BM <- (output.full$live_BM_Mg-sum(output.full$Dead_Biomass_Mg))[1]
+  output.full.2 <- as.data.frame(sapply(output.full,as.numeric))
+  end_BM <- (output.full.2$live_BM_Mg-sum(output.full.2$Dead_Biomass_Mg))[1]
   perc_loss <- ((output.full$live_BM_Mg[1]-end_BM)/output.full$live_BM_Mg[1])*100
   output.final <- output.full %>% 
     summarise(total_dead_Mg=sum(Dead_Biomass_Mg),total_dead_trees=sum(Dead_Trees),tot_live_Mg=mean(live_BM_Mg),tot_live_trees=mean(live_trees_tot),area=mean(area_ha)) %>% t 
@@ -213,6 +234,8 @@ biomass_calc <- function() {
   row.names(output.final) <- c("Dead tree biomass (metric tons)","Number of dead trees","Pre-drought live tree biomass (metric tons)","Pre-drought number of live trees","Forested area (ha)","Post-drought live tree biomass (metric tons)","Percent loss of live tree biomass","Post-drought number of live trees","Percent loss of live trees") 
 
   write.csv(output.final, file=paste("../results/",layer,".csv",sep=""))
+  print(noquote(paste("The full biomass calculations")))
+  print(Sys.time()-strt.beginning)
   return(output.final)
 }
 
