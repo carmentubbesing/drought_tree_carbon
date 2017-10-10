@@ -7,7 +7,6 @@ map <- function(){
   library(maptools)
   library(dplyr)
   library(RColorBrewer)
-  library(extrafont)
   library(ggsn)
   
 YEARS <- c("1215","2016")
@@ -49,13 +48,20 @@ merge <- merge(merge, table1215,by=c("x","y"), all.x=T, all.y=F)
 merge$D_BM_kgha.y[is.na(merge$D_BM_kgha.y)] <- 0
 # Add up dead biomass from all years
 merge$D_BM_kgha <- merge$D_BM_kgha.x+merge$D_BM_kgha.y
-# Calculate Percent change
+
+# Cap dead biomass if it's greater  than live biomass across the years
 merge$BPH_GE_25_CRM <- merge$BPH_GE_25_CRM.x
+merge <- merge %>% 
+  mutate(D_BM_kgha = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_GE_25_CRM, D_BM_kgha))
+
+
+# Calculate Percent change
+
 merge <- merge[,c("x","y","BPH_GE_25_CRM","D_BM_kgha")]
 merge$Perc_D <- merge$D_BM_kgha/merge$BPH_GE_25_CRM
 assign(paste(layer),merge)
 cols <- c('#a1d99b','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026') # define colors
-scale_res <- round((extent(get(layer))[2]-extent(get(layer))[1])/10000*4, digits =0)
+scale_res <- round((extent(get(layer))[2]-extent(get(layer))[1])/2000, digits =0)
 
 map_figure <- ggplot()+
   geom_tile(data=get(layer),aes(x=x,y=y,fill = Perc_D, color=Perc_D))+
@@ -78,13 +84,12 @@ map_figure <- ggplot()+
     plot.background=element_blank(),
     legend.title=element_blank(),
     plot.margin=unit(c(.5,.5,.5,.5), "cm"),
-    plot.title = element_text(family = "Times New Roman", size = 20), 
+    plot.title = element_text(size = 20), 
     legend.position = c(.85, .85),  
-    legend.text = element_text(family = "Times New Roman"),
     panel.border = element_rect(colour = "black", fill=NA, size=1))+
   labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016,", layer))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
-  north(data = unit.bound, location = "bottomleft", scale=.05,symbol=12)+
+  north(data = unit.bound, location = "topleft", scale=.05,symbol=12)+
   scalebar(data=unit.bound, dist = scale_res)
   
 map_figure
