@@ -43,8 +43,8 @@ summary(as.factor(df$Pol_2015))
 summary(as.factor(df$Pol_2013))
 
 ## Plot the polygon containing the most pixels in the area
-plot(drought16[drought16@data$"ID" ==107237,])
+plot(drought1215[drought1215@data$"ID" ==20603,], border = "dark green")
+plot(drought16[drought16@data$"ID" ==107237,], border = "blue", add = T)
 plot(spdf, add = T, col = "pink")
-plot(drought1215[drought1215@data$"ID" ==20603,], add = T)
-plot(drought1215[drought1215@data$"ID" ==63495,], add = T)
+plot(drought1215[drought1215@data$"ID" ==63495,], add = T, border = "purple")
 drought1215[drought1215@data$"ID" ==20603,]@data
