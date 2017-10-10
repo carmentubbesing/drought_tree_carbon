@@ -22,6 +22,10 @@ biomass_calc <- function() {
   drought1215 <- drought
   load(file="../../drought16.Rdata")
   
+  ### Give each polygon an ID
+  drought1215@data$ID <- seq(1, nrow(drought1215@data))
+  drought16@data$ID <- seq(nrow(drought1215@data), length.out = nrow(drought16@data))
+  
   ### Define years
   YEARS_NAMES <- c("1215","2016")
   
@@ -107,7 +111,7 @@ biomass_calc <- function() {
               dplyr::mutate(relNO = tot_NO*live.ratio) %>% 
               dplyr::mutate(BPH_abs = BPH_GE_25_CRM*(900/10000)) %>% 
               dplyr::mutate(BM_tree_kg = BPH_GE_25_CRM/TPH_GE_25) %>% 
-              select(-V1)
+              dplyr::select(-V1)
             pmerge$BM_tree_kg[is.na(pmerge$BM_tree_kg)] <- 0
             
           # drop estimated dead biomass per pixel down to the total live biomass if it's higher
@@ -122,9 +126,10 @@ biomass_calc <- function() {
             
           # Create vectors that are the same length as pmerge to combine into final table:
             RPT_YR <- rep(single@data$RPT_YR, nrow(pmerge)) # Create year vector
+            POL_ID <- single@data$ID
             D_BM_kgha <- pmerge$D_BM_kg/.09
             # Bring it all together
-            final <- cbind(pmerge, D_BM_kgha, RPT_YR) #    
+            final <- cbind(pmerge, D_BM_kgha, RPT_YR, POL_ID) #    
             return(final)
         }
 
@@ -138,26 +143,23 @@ biomass_calc <- function() {
   # Restructure so there's only one row per pixel
   df <- tbl_df(df)
   df <- df %>% 
-    mutate(mort_2012 = ifelse(RPT_YR == "2012",1,0)) %>% 
-    mutate(mort_2013 = ifelse(RPT_YR == "2013",1,0)) %>% 
-    mutate(mort_2014 = ifelse(RPT_YR == "2014",1,0)) %>% 
-    mutate(mort_2015 = ifelse(RPT_YR == "2015",1,0)) %>% 
-    mutate(mort_2016 = ifelse(RPT_YR == "2016",1,0)) 
+    mutate(Pol_2012 = ifelse(RPT_YR == "2012",POL_ID,0)) %>% 
+    mutate(Pol_2013 = ifelse(RPT_YR == "2013",POL_ID,0)) %>% 
+    mutate(Pol_2014 = ifelse(RPT_YR == "2014",POL_ID,0)) %>% 
+    mutate(Pol_2015 = ifelse(RPT_YR == "2015",POL_ID,0)) %>% 
+    mutate(Pol_2016 = ifelse(RPT_YR == "2016",POL_ID,0)) 
+  df_bu <- df
   df <- df %>% 
     mutate(trunc = ifelse(trunc == 1, RPT_YR, 0)) %>% 
-    group_by(x, y, TPH_GE_25, BPH_GE_25_CRM, FORTYPBA, TREEPLBA, BPH_abs, BM_tree_kg) %>% 
-    summarise(relNO_tot = sum(relNO), D_BM_kg = sum(D_BM_kg), D_BM_kgha = sum(D_BM_kgha), 
-              mort_2012 = sum(mort_2012),
-              mort_2013 = sum(mort_2013),
-              mort_2014 = sum(mort_2014),
-              mort_2015 = sum(mort_2015),
-              mort_2016 = sum(mort_2016)) 
+    group_by(x, y, TPH_GE_25, BPH_GE_25_CRM, FORTYPBA, TREEPLBA, BPH_abs, BM_tree_kg) %>%
+    summarise(relNO_tot = sum(relNO), D_BM_kg = sum(D_BM_kg), D_BM_kgha = sum(D_BM_kgha),Pol_2012= sum(Pol_2012), Pol_2013=sum(Pol_2013), Pol_2014=sum(Pol_2014), Pol_2015=sum(Pol_2015), Pol_2016=sum(Pol_2016)) 
   
   # Create a key for each pixel (row)
   pixel_key <- seq(1, nrow(df)) 
   df$pixel_key <- pixel_key
   df <- df %>% 
-    select(pixel_key, everything())
+    ungroup() %>% 
+    dplyr::select(pixel_key, everything())
   
   # Convert to spatial
   xy <- df[,c("x","y")]
@@ -229,19 +231,28 @@ biomass_calc <- function() {
   df_bu <- df
   df <- df %>% 
     ungroup() %>% 
-    select(-TPH_GE_25, -TREEPLBA, -BPH_GE_25_CRM, -FORTYPBA)
+    dplyr::select(-TPH_GE_25, -TREEPLBA, -BPH_GE_25_CRM, -FORTYPBA)
   df <- full_join(df,live_lemma, by = c("x", "y"))
 
 
   # Cap dead biomass if it's greater  than live biomass across the years
   df <- df %>% 
-    mutate(D_BM_kgha = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_abs, D_BM_kgha))
+    mutate(D_BM_kgha = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_GE_25_CRM, D_BM_kgha)) %>% 
+    mutate(D_BM_kg = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_abs, D_BM_kg)) 
+  
+  # Add columns for percent mortality
+  df <- df %>% mutate(Percent_Mortality_Biomass = D_BM_kg/BPH_abs)
+  df <- df %>% mutate(Percent_Mortality_Count = relNO_tot/NO_TREES_PX)
   
   # Save final data frame
+  save(df, file = paste("../results/Results_Table_", layer, ".Rdata", sep = ""))
   
   # Save spatial data frame of percent biomass loss
+  xy <- df[,c("x","y")]
+  spdf <- SpatialPointsDataFrame(coords=xy, data = df, proj4string = crs(LEMMA))
+  save(spdf, file = paste("../results/Results_Spatial_", layer, ".Rdata", sep = ""))
   
-  # Make a pretty results table
+  # Make a pretty summary table
   end_BM <- sum(df$BPH_abs) - sum(df$D_BM_kg)
   perc_loss <- ((sum(df$BPH_abs)-end_BM)/sum(df$BPH_abs))*100
  
