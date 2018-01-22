@@ -11,3 +11,4 @@ jpeg(paste("../results/map_", layer,".jpeg", sep = ""))
 map()
 dev.off()
 
+
