@@ -23,10 +23,12 @@ calc_dead <- function(){
   load(file="../../drought.Rdata")
   drought1215 <- drought
   load(file="../../drought16.Rdata")
+  load(file = "../../drought17.Rdata")
   
   ### Give each polygon an ID
   drought1215@data$ID <- seq(1, nrow(drought1215@data))
-  drought16@data$ID <- seq(nrow(drought1215@data), length.out = nrow(drought16@data))
+  drought16@data$ID <- seq(nrow(drought1215@data)+1, length.out = nrow(drought16@data))
+  drought17@data$ID <- seq(max(drought16@data$ID)+1, length.out = nrow(drought17@data))
   
   ### Define years
   YEARS_NAMES <- c("1215","2016", "2017")
@@ -47,7 +49,7 @@ calc_dead <- function(){
   ### Calculate dead biomass
   output.full <- data.frame()
   df <- data.frame()
-  for(k in 1:2) {
+  for(k in 1:3) {
   
   ## Select year(s) and corresponding ADS polygons 
   YEARS <- YEARS_NAMES[k]
@@ -105,7 +107,7 @@ calc_dead <- function(){
     pmerge <- full_join(pcoords, merge, by ="V1") 
     
     # find total number of trees in the polygon
-    tot_NO <- single@data$NO_TREES1 
+    tot_NO <- as.numeric(single@data$NO_TREES1)
     
     # filter to only forested forest types, then calculate biomass loss
     pmerge <- pmerge %>% 
@@ -113,8 +115,7 @@ calc_dead <- function(){
       dplyr::mutate(live.ratio = TPH_GE_25/sum(TPH_GE_25)) %>% 
       dplyr::mutate(relNO = tot_NO*live.ratio) %>% 
       dplyr::mutate(BPH_abs = BPH_GE_25_CRM*(900/10000)) %>% 
-      dplyr::mutate(BM_tree_kg = BPH_GE_25_CRM/TPH_GE_25) %>% 
-      dplyr::select(-V1)
+      dplyr::mutate(BM_tree_kg = BPH_GE_25_CRM/TPH_GE_25) 
     pmerge$BM_tree_kg[is.na(pmerge$BM_tree_kg)] <- 0
     
     # drop estimated dead biomass per pixel down to the total live biomass if it's higher
@@ -150,12 +151,28 @@ calc_dead <- function(){
     mutate(Pol_2013 = ifelse(RPT_YR == "2013",POL_ID,0)) %>%
     mutate(Pol_2014 = ifelse(RPT_YR == "2014",POL_ID,0)) %>%
     mutate(Pol_2015 = ifelse(RPT_YR == "2015",POL_ID,0)) %>%
-    mutate(Pol_2016 = ifelse(RPT_YR == "2016",POL_ID,0))
+    mutate(Pol_2016 = ifelse(RPT_YR == "2016",POL_ID,0)) %>% 
+    mutate(Pol_2017 = ifelse(RPT_YR == "2017",POL_ID,0))
   df_bu <- df
   df <- df %>%
     mutate(trunc = ifelse(trunc == 1, RPT_YR, 0)) %>%
-    group_by(x, y, TPH_GE_25, BPH_GE_25_CRM, FORTYPBA, TREEPLBA, BPH_abs, BM_tree_kg) %>%
-    summarise(relNO_tot = sum(relNO), D_BM_kg = sum(D_BM_kg), D_BM_kgha = sum(D_BM_kgha),Pol_2012= sum(Pol_2012), Pol_2013=sum(Pol_2013), Pol_2014=sum(Pol_2014), Pol_2015=sum(Pol_2015), Pol_2016=sum(Pol_2016))
+    group_by(x, 
+             y, 
+             TPH_GE_25, 
+             BPH_GE_25_CRM, 
+             FORTYPBA, 
+             TREEPLBA, 
+             BPH_abs, 
+             BM_tree_kg) %>%
+    summarise(relNO_tot = sum(relNO), 
+              D_BM_kg = sum(D_BM_kg), 
+              D_BM_kgha = sum(D_BM_kgha),
+              Pol_2012= sum(Pol_2012), 
+              Pol_2013=sum(Pol_2013), 
+              Pol_2014=sum(Pol_2014), 
+              Pol_2015=sum(Pol_2015), 
+              Pol_2016=sum(Pol_2016), 
+              Pol_2017=sum(Pol_2017))
   save(df, file = paste("../results/", layer, "_allyears",".Rdata",sep = ""))
   write.csv(df, file = paste("../results/", layer, "_allyears",".csv",sep = ""), row.names = F)
 }
