@@ -29,7 +29,7 @@ calc_dead <- function(){
   drought16@data$ID <- seq(nrow(drought1215@data), length.out = nrow(drought16@data))
   
   ### Define years
-  YEARS_NAMES <- c("1215","2016")
+  YEARS_NAMES <- c("1215","2016", "2017")
   
   ### Define forest types
   for_types <- unique(plots$FORTYPBA)[2:932]
@@ -53,8 +53,10 @@ calc_dead <- function(){
   YEARS <- YEARS_NAMES[k]
   if(YEARS=="1215") {
     drought <- drought1215
-  } else 
+  } else if(YEARS== "2016"){
     drought <- drought16
+  } else
+    drought <- drought17
   
   ## Establish parallel session
   registerDoParallel(c1)
