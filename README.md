@@ -34,8 +34,7 @@ Steps to calculating biomass loss on any management unit
     -   The shapefile can have any coordinate reference system.
     -   The folder and shapefile can be named anything, but keep in mind that the folder name will be used in labeling the output tables and map.
     -   Note: Be sure there are no extra files in `drought_tree_carbon-master/data/active_unit`. If you run these calculations for multiple shapefiles, you will need to clear the `active_unit` folder between each calculation.
-
-2.  Run the script called "install\_packages". You only need to do this once.
+2.  Run the script called "install\_packages". You only need to do this once. It may require restarting R.
 
 3.  Open the R file `code/GET_RESULTS.R`.
 
@@ -44,3 +43,26 @@ Steps to calculating biomass loss on any management unit
 5.  Run all lines of code in `GET_RESULTS.R` and wait a few minutes (up to an hour for large shapefiles).
 
 6.  Your results will appear as a table (.csv file) and map (.jpeg) in the Results folder.
+
+Checking that everything is working
+===================================
+
+1.  Put the folder "MH\_subsection" (in "Data") into the active\_unit folder
+2.  Run `GET_RESULTS`
+3.  Check that the output matches the below table:
+
+Drought Mortality, trees greater than 25 cm diameter, 2012-2016
+
+Biomass of dead trees (metric tons): 28276.5103
+
+Biomass live trees before drought (metric tons): 36496.53838
+
+Number of dead trees: 24217.4813
+
+Number of live trees before drought: 31307.34699
+
+Post-drought live tree biomass (metric tons): 8220.028075
+
+Percent loss of live tree biomass: 77.4772391
+
+Percent loss of number of live trees: 77.35398759
