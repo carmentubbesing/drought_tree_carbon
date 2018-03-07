@@ -141,7 +141,7 @@ calc_dead <- function(){
   print(noquote(paste("Calculating dead biomass for years", YEARS)))
   print(Sys.time()-strt)
   print(paste("rows for this year:", nrow(results_k)))
-  print(paste("dead biomass in Mg:", sum(df$D_BM_kg)/1000))
+  print(paste("dead biomass in million metric tons (BEFORE CROPPING TO UNIT):", round(sum(results_k$D_BM_kg)/1000000,2)))
   }
   print(paste("rows in df:", nrow(df)))
    

@@ -48,7 +48,7 @@ summarize <- function(){
                  "Percent loss of live tree biomass",
                  "Percent loss of number of live trees")
   row.names(output.table) <- row_names
-  colnames(output.table) <- "Drought Mortality, trees greater than 25 cm diameter, 2012-2016"
+  colnames(output.table) <- "Drought Mortality, trees greater than 25 cm diameter, 2012-2017"
   
   write.csv(output.table, file=paste("../results/",layer,"_results_summary.csv",sep=""))
   print(noquote(paste("Make summary table")))
