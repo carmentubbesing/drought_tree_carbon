@@ -1,4 +1,4 @@
-summarize <- function(){
+summarize_yearly <- function(){
 
   # Load data
   layer <-list.files("../data/active_unit")

@@ -35,7 +35,6 @@ calc_dead <- function(){
     droughti@data$ID <- seq(id+1, length.out = nrow(droughti@data))
     id <- max(droughti@data$ID)
     assign(droughts[i], droughti)
-    print(summary(get(droughts[i])@data$ID))
   }
   
   ### Define years

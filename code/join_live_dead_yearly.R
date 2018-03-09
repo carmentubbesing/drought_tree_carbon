@@ -1,4 +1,4 @@
-join_live_dead <- function(){
+join_live_dead_yearly <- function(){
   
   layer <-list.files("../data/active_unit")
   load(file = "../results/temp/live_lemma.Rdata")
