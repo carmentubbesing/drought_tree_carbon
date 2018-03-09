@@ -12,7 +12,7 @@ biomass_calc <- function() {
   
   print("Calculating dead biomass")
   strt_dead <-Sys.time()
-  source("calc_dead.R")
+  source("calc_dead_yearly.R")
   calc_dead()
   print("Calculating dead biomass took a total of:")
   print(Sys.time()-strt_dead)

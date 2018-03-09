@@ -29,17 +29,14 @@ calc_dead <- function(){
   
   ### Give each polygon an ID
   droughts <- c("drought12", "drought13", "drought14", "drought15", "drought16", "drought17")
-  id <- 1
+  id <- 0
   for(i in 1:length(droughts)){
     droughti <- get(droughts[i])
     droughti@data$ID <- seq(id+1, length.out = nrow(droughti@data))
     id <- max(droughti@data$ID)
     assign(droughts[i], droughti)
+    print(summary(get(droughts[i])@data$ID))
   }
-  
-  drought1215@data$ID <- seq(1, nrow(drought1215@data))
-  drought16@data$ID <- seq(nrow(drought1215@data)+1, length.out = nrow(drought16@data))
-  drought17@data$ID <- seq(max(drought16@data$ID)+1, length.out = nrow(drought17@data))
   
   ### Define years
   YEARS_NAMES <- c("2012","2013", "2014", "2015", "2016", "2017")
@@ -60,17 +57,23 @@ calc_dead <- function(){
   ### Calculate dead biomass
   output.full <- data.frame()
   df <- data.frame()
-  for(k in 1:3) {
+  for(k in 1:length(YEARS_NAMES)) {
   
   ## Select year(s) and corresponding ADS polygons 
   YEARS <- YEARS_NAMES[k]
-  if(YEARS=="1215") {
-    drought <- drought1215
+  if(YEARS=="2012") {
+    drought <- drought12
+  } else if(YEARS== "2013"){
+    drought <- drought13
+  } else if(YEARS== "2014"){
+    drought <- drought14
+  } else if(YEARS== "2015"){
+    drought <- drought15
   } else if(YEARS== "2016"){
     drought <- drought16
-  } else
-    drought <- drought17
-  
+  } else if(YEARS=="2017"){
+    drought <- drought17}
+  print(YEARS) 
   ## Establish parallel session
   registerDoParallel(c1)
   
