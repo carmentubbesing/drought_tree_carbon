@@ -1,0 +1,112 @@
+---
+  title: "map_southsierra"
+author: "Carmen"
+date: "January 23, 2018"
+output: html_document
+---
+  
+  This is based on the code from map_new_unit in the drought_tree_carbon github repository. 
+
+Load packages
+```{r}
+library(rgdal)
+library(raster)
+library(ggplot2)
+library(maptools)
+library(dplyr)
+library(RColorBrewer)
+library(ggsn)
+library(rgeos)
+```
+
+# PREP RESULTS
+
+## Load
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/S_sierra/Results_2012-2017/")
+counties <- list.files(pattern = ".Rdata")
+counties_df <- counties[grep("Results_Table", counties)]
+counties_spdf <- counties[grep("Results_Spatial", counties)]
+load(counties_spdf[1])
+counties_tables <- c()
+for(i in 1:length(counties_df)){
+  load(counties_df[i])
+  name <- gsub(".Rdata","",paste(counties_df[i]))
+  assign(name, df)
+  counties_tables <- c(counties_tables, name)
+}
+```
+
+
+# PREP REGION BOUNDARY
+
+## Load 
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/data")
+region <- readOGR(dsn = "subregion_S_Sierra", layer = "subregion_S_Sierra")
+region <- spTransform(region, crs(spdf))
+plot(region)
+```
+
+## Convert format
+```{r}
+region@data$id = rownames(region@data)
+region.points = fortify(region, region="id")
+region.bound = full_join(region.points, region@data, by="id")
+region.cent <- as.data.frame(coordinates(region))
+```
+
+# Set formatting of map
+```{r}
+cols <- c('#a1d99b','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026') # define colors
+scale_res <- round((extent(region)[2]-extent(region)[1])/2000, digits =0)
+```
+
+# Map
+```{r}
+
+map_figure <- ggplot()+
+  geom_tile(data= get(counties_tables[1]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[2]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  # geom_tile(data= get(counties_tables[3]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  # geom_tile(data= get(counties_tables[4]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  # geom_tile(data= get(counties_tables[5]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  # geom_tile(data= get(counties_tables[6]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  # geom_tile(data= get(counties_tables[7]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  scale_colour_gradientn(colours = cols,
+                         breaks=c(0,.05,.25,.5,.75,1),
+                         labels=c("","5%","25%","50%","75%","100%"),
+                         limits=c(0,1),
+                         na.value="white")+
+  scale_fill_gradientn(colours = cols,
+                       limits=c(0,1),
+                       breaks=c(0,.05,.25,.5,.75,1),
+                       labels=c("","5%","25%","50%","75%","100%"),
+                       na.value="white")+
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(), axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(), axis.title.y=element_blank(),
+        panel.background=element_blank(),
+        panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        legend.title=element_blank(),
+        plot.margin=unit(c(.5,.5,.5,.5), "cm"),
+        plot.title = element_text(size = 20), 
+        legend.position = c(.85, .85),  
+        panel.border = element_rect(colour = "black", fill=NA, size=1))+
+  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016, South Sierra"))+
+  geom_path(data=region.bound, aes(x=long,y=lat,group=group),color="black")+
+  north(data = region.bound, location = "topleft", scale=.05,symbol=12)+
+  scalebar(data=region.bound, dist = scale_res)+
+  coord_fixed(ratio = 1)
+```
+
+# Save
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/S_sierra")
+jpeg("southsierra_map_2012-2017.jpeg", width = 1000, height = 1400, quality = 200)
+map_figure
+dev.off()
+```
+

@@ -1,0 +1,38 @@
+---
+title: "Total_biomass_southsierra"
+author: "Carmen"
+date: "January 23, 2018"
+output: html_document
+---
+
+
+## Load
+```{r}
+library(dplyr)
+library(tidyr)
+setwd("~/drought_tree_carbon/sierra_regions/results/SE_Sierra/")
+counties <- list.files(pattern = ".csv")
+counties_sum <- counties[grep("results_summary", counties)]
+counties_tables <- c()
+full_df <- data.frame()
+for(i in 1:length(counties_sum)){
+  table <- read.csv(counties_sum[i])
+  name <- gsub(".csv","",paste(counties_sum[i]))
+  assign(name, table)
+  colnames(table) <- c("names",name)
+  counties_tables <- c(counties_tables, name)
+  if(nrow(full_df)==0){
+  full_df <- table  
+  } else{
+    full_df <- full_join(full_df, table)
+  }
+    
+}
+```
+
+# Save
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/SE_Sierra/")
+write.csv(full_df, file = "SE_Sierra_results_summary.csv", row.names = F)
+```
+

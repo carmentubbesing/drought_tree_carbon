@@ -1,0 +1,201 @@
+---
+title: "map_southsierra"
+author: "Carmen"
+date: "January 23, 2018"
+output: html_document
+---
+  
+  This is based on the code from map_new_unit in the drought_tree_carbon github repository. 
+
+Load packages
+```{r}
+library(rgdal)
+library(raster)
+library(ggplot2)
+library(maptools)
+library(dplyr)
+library(RColorBrewer)
+library(ggsn)
+library(rgeos)
+library(ggmap)
+```
+
+# PREP RESULTS
+
+## Load
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/NE_Sierra/")
+load("Results_Table_subregion_NE_Sierra.Rdata")
+load("Results_Spatial_subregion_NE_Sierra.Rdata")
+```
+
+## Split into smaller data frames
+```{r}
+splits <- split(seq(nrow(df)), c(1:6))
+for(i in 1:6){
+  dfi <- df[splits[[i]],]
+  assign(paste("df",i, sep = ""), dfi)
+}
+```
+
+Check
+```{r}
+nrow(df1)+nrow(df2)+nrow(df3)+nrow(df4)+nrow(df5)+nrow(df6) == nrow(df)
+```
+
+# PREP REGION BOUNDARY
+
+## Load 
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/data/sierra_regions")
+region <- readOGR(dsn = "subregion_NE_Sierra", layer = "subregion_NE_Sierra")
+region <- spTransform(region, crs(spdf))
+plot(region)
+```
+
+## Convert format
+```{r}
+region@data$id = rownames(region@data)
+region.points = fortify(region, region="id")
+region.bound = full_join(region.points, region@data, by="id")
+region.cent <- as.data.frame(coordinates(region))
+```
+
+# Set formatting of map
+```{r}
+cols <- c('#a1d99b','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026') # define colors
+scale_res <- round((extent(region)[2]-extent(region)[1])/2000, digits =0)
+```
+
+# Map - do not try to plot this in R! It's too big
+```{r}
+
+map_figure <- ggplot()+
+  geom_tile(data= df1,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= df2,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= df3,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= df4,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= df5,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= df6,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  
+  scale_colour_gradientn(colours = cols,
+                         breaks=c(0,.05,.25,.5,.75,1),
+                         labels=c("","5%","25%","50%","75%","100%"),
+                         limits=c(0,1),
+                         na.value="white")+
+  scale_fill_gradientn(colours = cols,
+                       limits=c(0,1),
+                       breaks=c(0,.05,.25,.5,.75,1),
+                       labels=c("","5%","25%","50%","75%","100%"),
+                       na.value="white")+
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(), axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(), axis.title.y=element_blank(),
+        panel.background=element_blank(),
+        panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        legend.title=element_blank(),
+        plot.margin=unit(c(.5,.5,.5,.5), "cm"),
+        plot.title = element_text(size = 20), 
+        legend.position = c(.85, .95),  
+        panel.border = element_rect(colour = "black", fill=NA, size=1))+
+  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016, North Sierra"))+
+  geom_path(data=region.bound, aes(x=long,y=lat,group=group),color="black")+
+  north(data = region.bound, location = "topleft", scale=.05,symbol=12)+
+  scalebar(data=region.bound, dist = scale_res)+
+  coord_fixed(ratio = 1)
+```
+
+
+# Save
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/NE_Sierra/")
+jpeg("NE_sierra_map.jpeg", width = 1000, height = 1400, quality = 200)
+map_figure
+dev.off()
+```
+
+# Convert to lat/long
+```{r}
+spdf_latlong <- spTransform(spdf, CRS("+proj=longlat +datum=WGS84"))
+crs(spdf_latlong)
+head(spdf_latlong@data)
+
+```
+
+# Make a data frame
+```{r}
+spdf_latlong_df <- data.frame(slot(spdf_latlong, "coords"), spdf_latlong@data$Percent_Mortality_Biomass)
+head(spdf_latlong_df)
+```
+
+# Set up base map
+```{r}
+mapImageData <- get_map(location = c(lon = -120.75,
+  lat = 40.974),
+  color = "color", # or bw
+  source = "google",
+  maptype = "satellite",
+  zoom = 7)
+ggmap(mapImageData)
+```
+
+
+
+## Split into smaller data frames
+```{r}
+splits <- split(seq(nrow(spdf_latlong_df)), c(1:20))
+for(i in 1:20){
+  spdf_latlong_dfi <- spdf_latlong_df[splits[[i]],]
+  assign(paste("spdf_latlong_df",i, sep = ""), spdf_latlong_dfi)
+}
+```
+
+
+```{r}
+map_image <- ggmap(mapImageData)+
+  geom_tile(data= spdf_latlong_df1,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+ # geom_tile(data= spdf_latlong_df2,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+  # geom_tile(data= spdf_latlong_df3,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+  # geom_tile(data= spdf_latlong_df4,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+  # geom_tile(data= spdf_latlong_df5,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+  # geom_tile(data= spdf_latlong_df6,aes(x=x,y=y,fill = spdf_latlong.data.Percent_Mortality_Biomass, color=spdf_latlong.data.Percent_Mortality_Biomass))+
+  
+  scale_colour_gradientn(colours = cols,
+                         breaks=c(0,.05,.25,.5,.75,1),
+                         labels=c("","5%","25%","50%","75%","100%"),
+                         limits=c(0,1),
+                         na.value="white")+
+  scale_fill_gradientn(colours = cols,
+                       limits=c(0,1),
+                       breaks=c(0,.05,.25,.5,.75,1),
+                       labels=c("","5%","25%","50%","75%","100%"),
+                       na.value="white")+
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(), axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(), axis.title.y=element_blank(),
+        panel.background=element_blank(),
+        panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        legend.title=element_blank(),
+        plot.margin=unit(c(.5,.5,.5,.5), "cm"),
+        plot.title = element_text(size = 20), 
+        legend.position = c(.85, .95),  
+        panel.border = element_rect(colour = "black", fill=NA, size=1))+
+  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016, North Sierra"))
+  # north(data = region.bound, location = "topleft", scale=.05,symbol=12)+
+  # scalebar(data=region.bound, dist = scale_res)+
+  #coord_fixed(ratio = 1)
+```
+
+
+# Save map image
+```{r}
+setwd("~/drought_tree_carbon/sierra_regions/results/NE_Sierra/")
+jpeg("NE_sierra_map_image.jpeg")
+map_image
+dev.off()
+```
+
