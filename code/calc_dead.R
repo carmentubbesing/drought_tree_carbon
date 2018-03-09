@@ -174,6 +174,6 @@ calc_dead <- function(){
               Pol_2015=sum(Pol_2015), 
               Pol_2016=sum(Pol_2016), 
               Pol_2017=sum(Pol_2017))
-  save(df, file = paste("../results/", layer, "_allyears",".Rdata",sep = ""))
-  write.csv(df, file = paste("../results/", layer, "_allyears",".csv",sep = ""), row.names = F)
+  save(df, file = paste("../results/", layer, "_2012_2017",".Rdata",sep = ""))
+  write.csv(df, file = paste("../results/", layer, "_2012_2017",".csv",sep = ""), row.names = F)
 }
