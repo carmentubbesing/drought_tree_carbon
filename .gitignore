@@ -1,5 +1,4 @@
 *.Rhistory
-code/setup_and_statewide_units/*
-
+data/lemma_cropped.Rdata
 
 
