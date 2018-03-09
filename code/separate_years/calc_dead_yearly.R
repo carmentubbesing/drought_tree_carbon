@@ -28,6 +28,15 @@ calc_dead <- function(){
   load(file = "../../drought17.Rdata")
   
   ### Give each polygon an ID
+  droughts <- c("drought12", "drought13", "drought14", "drought15", "drought16", "drought17")
+  id <- 1
+  for(i in 1:length(droughts)){
+    droughti <- get(droughts[i])
+    droughti@data$ID <- seq(id+1, length.out = nrow(droughti@data))
+    id <- max(droughti@data$ID)
+    assign(droughts[i], droughti)
+  }
+  
   drought1215@data$ID <- seq(1, nrow(drought1215@data))
   drought16@data$ID <- seq(nrow(drought1215@data)+1, length.out = nrow(drought16@data))
   drought17@data$ID <- seq(max(drought16@data$ID)+1, length.out = nrow(drought17@data))
