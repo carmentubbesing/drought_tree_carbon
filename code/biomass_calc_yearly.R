@@ -19,8 +19,10 @@ biomass_calc <- function() {
   
   print("Cropping dead biomass to unit shape")
   strt_crop <-Sys.time()
+  source("crop_dead.R")
   source("crop_dead_yearly.R")
   crop_dead()
+  crop_dead_yearly()
   print("Cropping dead biomass took a total of:")
   print(Sys.time()-strt_crop)
   
