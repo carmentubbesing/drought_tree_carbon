@@ -25,6 +25,7 @@ library(rgeos)
 ```{r}
 setwd("~/drought_tree_carbon/sierra_regions/results/S_sierra/Results_2012-2017/")
 counties <- list.files(pattern = ".Rdata")
+counties <- counties[!counties %in% grep("20", counties, value = T) & !counties %in%  grep("1215", counties, value = T)]
 counties_df <- counties[grep("Results_Table", counties)]
 counties_spdf <- counties[grep("Results_Spatial", counties)]
 load(counties_spdf[1])
@@ -68,11 +69,11 @@ scale_res <- round((extent(region)[2]-extent(region)[1])/2000, digits =0)
 map_figure <- ggplot()+
   geom_tile(data= get(counties_tables[1]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
   geom_tile(data= get(counties_tables[2]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
-  # geom_tile(data= get(counties_tables[3]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
-  # geom_tile(data= get(counties_tables[4]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
-  # geom_tile(data= get(counties_tables[5]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
-  # geom_tile(data= get(counties_tables[6]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
-  # geom_tile(data= get(counties_tables[7]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[3]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[4]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[5]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[6]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
+  geom_tile(data= get(counties_tables[7]),aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
   scale_colour_gradientn(colours = cols,
                          breaks=c(0,.05,.25,.5,.75,1),
                          labels=c("","5%","25%","50%","75%","100%"),
@@ -95,7 +96,7 @@ map_figure <- ggplot()+
         plot.title = element_text(size = 20), 
         legend.position = c(.85, .85),  
         panel.border = element_rect(colour = "black", fill=NA, size=1))+
-  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2016, South Sierra"))+
+  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2017, South Sierra"))+
   geom_path(data=region.bound, aes(x=long,y=lat,group=group),color="black")+
   north(data = region.bound, location = "topleft", scale=.05,symbol=12)+
   scalebar(data=region.bound, dist = scale_res)+

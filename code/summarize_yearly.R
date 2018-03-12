@@ -58,8 +58,7 @@ summarize_yearly <- function(){
     }
     
     write.csv(output.table, file=paste("../results/",layer,YEAR,"_results_summary.csv",sep=""))
-    print(noquote(paste("Make summary table")))
-    print(table_full)
   }
+  print(table_full)
   write.csv(table_full, file=paste("../results/",layer,"_results_summary_yearly_all.csv",sep=""))
 }

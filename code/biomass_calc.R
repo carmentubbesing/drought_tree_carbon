@@ -47,8 +47,5 @@ biomass_calc <- function() {
   
   print(paste("The whole process for", layer, "took:"))
   print(Sys.time() - strt_total)
-  
-  output <- read.csv(file=paste("../results/",layer,"_results_summary.csv",sep=""))
-  return(output)
 }
 
