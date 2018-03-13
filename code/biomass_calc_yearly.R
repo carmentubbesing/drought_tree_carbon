@@ -44,8 +44,6 @@ biomass_calc <- function() {
   
   print("Summarizing")
   strt_summary <- Sys.time()
-  source("summarize.R")
-  summarize()
   source("summarize_yearly.R")
   summarize_yearly()
   print("Summarizing took:")

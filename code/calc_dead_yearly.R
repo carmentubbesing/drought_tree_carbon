@@ -149,7 +149,7 @@ calc_dead <- function(){
     final <- cbind(pmerge, D_BM_kgha, RPT_YR, POL_ID) #    
     return(final)
   }
-  save(results_k, file = paste("../results/", layer, YEARS,".Rdata",sep = ""))
+  save(results_k, file = paste("../results/temp/", layer, YEARS,".Rdata",sep = ""))
   df <- rbind(df, results_k)
   print(noquote(paste("Calculating dead biomass for years", YEARS)))
   print(Sys.time()-strt)
@@ -187,6 +187,6 @@ calc_dead <- function(){
               Pol_2015=sum(Pol_2015), 
               Pol_2016=sum(Pol_2016), 
               Pol_2017=sum(Pol_2017))
-  save(df, file = paste("../results/", layer, "_2012_2017",".Rdata",sep = ""))
-  write.csv(df, file = paste("../results/", layer, "_2012_2017",".csv",sep = ""), row.names = F)
+  save(df, file = paste("../results/temp/", layer, "_2012_2017",".Rdata",sep = ""))
+  write.csv(df, file = paste("../results/temp/", layer, "_2012_2017",".csv",sep = ""), row.names = F)
 }

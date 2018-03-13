@@ -1,5 +1,9 @@
 summarize_yearly <- function(){
-
+  
+  # YEARLY RESULTS SUMMARIES
+  source("summarize.R")
+  summarize()
+  
   # Load data
   layer <-list.files("../data/active_unit")
   YEARS_NAMES <- c("2012","2013", "2014", "2015", "2016", "2017")
@@ -56,9 +60,12 @@ summarize_yearly <- function(){
     } else {
       table_full <- cbind(table_full, output.table)
     }
-    
-    write.csv(output.table, file=paste("../results/",layer,YEAR,"_results_summary.csv",sep=""))
+    table_full <- cbind(table_full , output.table.all.years)
   }
+  
+  # OVERALL RESULTS SUMMARY
+  
+  
   print(table_full)
-  write.csv(table_full, file=paste("../results/",layer,"_results_summary_yearly_all.csv",sep=""))
+  write.csv(table_full, file=paste("../results/",layer,"_results_summary.csv",sep=""))
 }

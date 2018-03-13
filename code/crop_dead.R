@@ -1,7 +1,7 @@
 crop_dead <- function(){
   layer <-list.files("../data/active_unit")
   
-  load(paste("../results/", layer, "_2012_2017.Rdata", sep = ""))
+  load(paste("../results/temp/", layer, "_2012_2017.Rdata", sep = ""))
   
   # Create a key for each pixel (row)
   pixel_key <- seq(1, nrow(df))
@@ -26,6 +26,6 @@ crop_dead <- function(){
   spdf_in_unit <- spdf[pixel_key %in% in_unit$pixel_key,]
   df <- df %>% 
     filter(pixel_key %in% in_unit$pixel_key)
-  save(df, file = paste("../results/", layer, "_2012_2017_mask",".Rdata",sep = ""))
-  save(spdf_in_unit, file = paste("../results/", layer, "_2012_2017_mask_spdf",".Rdata",sep = ""))
+  save(df, file = paste("../results/temp/", layer, "_2012_2017_mask",".Rdata",sep = ""))
+  save(spdf_in_unit, file = paste("../results/temp/", layer, "_2012_2017_mask_spdf",".Rdata",sep = ""))
 }

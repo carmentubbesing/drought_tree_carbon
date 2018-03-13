@@ -10,7 +10,7 @@ output: html_document
 ```{r}
 library(dplyr)
 library(tidyr)
-setwd("~/drought_tree_carbon/southern_sierra_region/results/drought_mortality_southsierra_results/")
+setwd("~/drought_tree_carbon/sierra_regions/results/S_sierra/Results_2012-2017/")
 counties <- list.files(pattern = ".csv")
 counties_sum <- counties[grep("results_summary", counties)]
 counties_tables <- c()

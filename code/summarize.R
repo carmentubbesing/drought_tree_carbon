@@ -4,8 +4,8 @@ summarize <- function(){
   
   # Load data
   layer <-list.files("../data/active_unit")
-  load(paste("../results/", layer, "_2012_2017_mask_spdf.Rdata", sep = ""))
-  load(paste("../results/", layer, "_2012_2017_mask.Rdata", sep = ""))
+  load(paste("../results/temp/", layer, "_2012_2017_mask_spdf.Rdata", sep = ""))
+  load(paste("../results/temp/", layer, "_2012_2017_mask.Rdata", sep = ""))
   load("../results/temp/live_lemma.Rdata")
   dead <- df
   
@@ -50,7 +50,9 @@ summarize <- function(){
   row.names(output.table) <- row_names
   colnames(output.table) <- "Drought Mortality, trees greater than 25 cm diameter, 2012-2017"
   
-  write.csv(output.table, file=paste("../results/",layer,"_results_summary.csv",sep=""))
+  write.csv(output.table, file=paste("../results/temp/",layer,"_results_summary.csv",sep=""))
+  print(output.table)
+  output.table.all.years <<- output.table
   print(noquote(paste("Make summary table")))
   print(Sys.time()-strt)
 }

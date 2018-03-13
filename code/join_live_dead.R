@@ -2,7 +2,7 @@ join_live_dead <- function(){
   
   layer <-list.files("../data/active_unit")
   ### Join live and dead results
-  load(file = paste("../results/", layer, "_2012_2017_mask",".Rdata",sep = ""))
+  load(file = paste("../results/temp/", layer, "_2012_2017_mask",".Rdata",sep = ""))
   load(file = "../results/temp/live_lemma.Rdata")
   
   df <- df %>% 
