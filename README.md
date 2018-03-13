@@ -54,7 +54,7 @@ Checking that everything is working
 
 1.  Put the folder "MH\_subsection" (in "Data") into the active\_unit folder
 2.  Run `GET_RESULTS_YEARLY`
-3.  Check that the output matches the below table
+3.  Check that the last column of the output matches the results table
 4.  If it does not, contact Carmen at <ctubbesing@berkeley.edu>
 
 Biomass of dead trees (metric tons): 28431.50
