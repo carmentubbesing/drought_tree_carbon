@@ -51,7 +51,5 @@ biomass_calc <- function() {
   
   print(paste("The whole process for", layer, "took:"))
   print(Sys.time() - strt_total)
-  
-  return(output)
 }
 

@@ -9,6 +9,7 @@ biomass_calc()
 
 map_yearly()
 
+layer <-list.files("../data/active_unit")
 jpeg(paste("../results/map_", layer,".jpeg", sep = ""))
 map()
 dev.off()
