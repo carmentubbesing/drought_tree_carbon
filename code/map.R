@@ -51,11 +51,10 @@ map_figure <- ggplot()+
     plot.title = element_text(size = 20), 
     legend.position = c(.85, .85),  
     panel.border = element_rect(colour = "black", fill=NA, size=1))+
-  labs(title=paste("Percent loss of live adult tree aboveground biomass, \n2012-2017,", layer))+
+  labs(title=paste("Percent loss of live adult tree\naboveground biomass, 2012-2017,\n", layer, sep = ""))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
   north(data = unit.bound, location = "topleft", scale=.05,symbol=12)+
   scalebar(data=unit.bound, dist = scale_res)+
   coord_fixed(ratio = 1)
-
-return(map_figure)
+  ggsave(file = paste("../results/map_", layer, ".jpeg", sep = ""), plot = map_figure, width = 7, height = 6)
 }
