@@ -19,21 +19,7 @@ for(i in 1:length(areas)){
   transform()
   
   biomass_calc()
-}
-
-# Just mapping
-for(i in 1:length(areas)){
-  # Remove county from folder
-  active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
-  unlink(active_county, recursive = T)
-  
-  from <- areas[i]
-  system(paste("cp -r", from, to)) 
-  print(list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F))
-  
-  transform()
-  
-  #map_yearly()
+  map_yearly()
   map()
 }
 
