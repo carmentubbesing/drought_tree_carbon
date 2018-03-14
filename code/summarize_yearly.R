@@ -54,17 +54,17 @@ summarize_yearly <- function(){
                    "Percent loss of live tree biomass",
                    "Percent loss of number of live trees")
     row.names(output.table) <- row_names
-    colnames(output.table) <- paste(YEAR, "Drought Mortality, trees greater than 25 cm diameter")
+    colnames(output.table) <- paste("yr",YEAR,sep="")
     table_full <- if(nrow(table_full)==0){
       table_full <-  output.table
     } else {
       table_full <- cbind(table_full, output.table)
     }
-    table_full <- cbind(table_full , output.table.all.years)
+    
   }
   
   # OVERALL RESULTS SUMMARY
-  
+  table_full <- cbind(table_full , output.table.all.years)
   
   print(table_full)
   write.csv(table_full, file=paste("../results/",layer,"_results_summary.csv",sep=""))

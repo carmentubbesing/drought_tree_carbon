@@ -43,9 +43,13 @@ setwd(paste(EPIC, "/GIS Data/tempdir", sep=""))
 save(drought16, file="drought16.Rdata")
 
 ### Look at how much mortality is from fire
-ogrListLayers(dsn = "ADS2015.gdb")
-drought15 <- readOGR(dsn = "ADS2015.gdb", layer = "ADS15")
-drought15_fire <- drought15@data %>% filter(DCA1 == "30000") %>% summarise(sum(NO_TREES1))
+summary(as.factor(drought17@data$DCA1))
+summary(as.factor(drought16@data$DCA1))
+summary(as.factor(drought@data$DCA1))
+drought17_fire <- drought17@data %>% filter(DCA1 == "30000") %>% summarise(sum(as.numeric(NO_TREES1)))
+drought17_fire
+drought16_fire <- drought16@data %>% filter(DCA1 == "30000") %>% summarise(sum(as.numeric(NO_TREES1)))
+drought16_fire
 
 drought16 <- spTransform(drought15, crs(LEMMA)) #change it to CRS of LEMMA data - this takes a while
 setwd(paste(EPIC, "/GIS Data/tempdir", sep=""))

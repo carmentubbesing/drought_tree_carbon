@@ -1,7 +1,5 @@
-source("transform_active.R")
-source("biomass_calc_yearly.R")
-source("map_yearly.R")
-source("map.R")
+
+source("summarize_yearly.R")
 
 counties <- list.dirs("~/drought_tree_carbon/sierra_regions/data/counties/", recursive = F)
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
@@ -14,11 +12,10 @@ for(i in 1:length(counties)){
   from <- counties[i]
   system(paste("cp -r", from, to)) 
   print(list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F))
+
   
-  transform()
-  
-  biomass_calc()
+  summarize_yearly()
 }
 
-             
-             
+
+
