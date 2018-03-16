@@ -70,3 +70,128 @@ Post-drought live tree biomass (metric tons): 8065.04
 Percent loss of live tree biomass: 77.90
 
 Percent loss of number of live trees: 77.78
+
+Output Variables
+================
+
+<table>
+<colgroup>
+<col width="30%" />
+<col width="32%" />
+<col width="36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Code</th>
+<th align="left">Description</th>
+<th align="left">Source(s) of data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>pixel_key</code></td>
+<td align="left">Unique pixel ID</td>
+<td align="left">Analysis</td>
+</tr>
+<tr class="even">
+<td align="left"><code>x</code></td>
+<td align="left">X coordinate of pixel center</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>y</code></td>
+<td align="left">Y coordinate of pixel center</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>n</code></td>
+<td align="left">Number of pixels with this pixel's PlotID in the polygon</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>TPH_GE_25</code></td>
+<td align="left">Number of live trees per hectare over 25 cm dbh</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>BPH_GE_25_CRM</code></td>
+<td align="left">Biomass per hectare of live trees over 25 cm (kg/ha)</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>FORTYPBA</code></td>
+<td align="left">Forest type according to basal area</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>TREEPLBA</code></td>
+<td align="left">Most common tree species in the pixel according to basal area</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>relNO_tot</code></td>
+<td align="left">Estimated number of dead trees in pixel</td>
+<td align="left">Number of dead trees from <code>drought</code> (<code>Pol.NO_TREE</code>), divied up based on <code>live_ratio</code>, which is the ratio of live trees in that pixel to total live trees in the polygon</td>
+</tr>
+<tr class="even">
+<td align="left"><code>BM_live_2012_kg</code></td>
+<td align="left">Biomass of live trees &gt;25 cm in the pixel (kg)</td>
+<td align="left"><code>BPH_GE_25_CRM</code> multiplied by .09</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>BM_tree_kg</code></td>
+<td align="left">Estimated biomass per tree for trees &gt;25 cm</td>
+<td align="left"><code>BPH_GE_25_CRM</code> divided by <code>TPH_GE_25</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>D_BM_kg</code></td>
+<td align="left">Estimated biomass of dead trees in the pixel in kg</td>
+<td align="left"><code>LEMMA</code> &amp; <code>drought</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>D_BM_kgha</code></td>
+<td align="left">Estimated biomass of dead trees in the pixel in kg/ha</td>
+<td align="left"><code>LEMMA</code> &amp; <code>drought</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>Pol_2013</code></td>
+<td align="left">ADS Polygon ID for the trees that were recorded dead in 2013</td>
+<td align="left"><code>drought</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Pol_2014</code></td>
+<td align="left">ADS Polygon ID for the trees that were recorded dead in 2014</td>
+<td align="left"><code>drought</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>Pol_2015</code></td>
+<td align="left">ADS Polygon ID for the trees that were recorded dead in 2015</td>
+<td align="left"><code>drought</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Pol_2016</code></td>
+<td align="left">ADS Polygon ID for the trees that were recorded dead in 2016</td>
+<td align="left"><code>drought</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>Pol_2017</code></td>
+<td align="left">ADS Polygon ID for the trees that were recorded dead in 2017</td>
+<td align="left"><code>drought</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>NO_TREES_PX</code></td>
+<td align="left">Number of live trees in the pixel in 2012</td>
+<td align="left"><code>LEMMA</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>Percent_Mortality_Biomass</code></td>
+<td align="left">Biomass of all trees that died divided by biomass of live trees in 2012</td>
+<td align="left"><code>D_BM_kg/BM_live_2012_kg</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Percent_Mortality_Count</code></td>
+<td align="left">Number of all trees that died divided by number of live trees in 2012</td>
+<td align="left"><code>relNO_tot/NO_TREES_PX</code></td>
+</tr>
+</tbody>
+</table>
