@@ -2,7 +2,7 @@ join_live_dead <- function(){
   
   layer <-list.files("../data/active_unit")
   ### Join live and dead results
-  load(file = paste("../results/temp/", layer, "_2012_2017_mask",".Rdata",sep = ""))
+  load(file = paste("../results/temp/", layer, "_2013_2017_mask",".Rdata",sep = ""))
   load(file = "../results/temp/live_lemma.Rdata")
   
   df <- df %>% 
@@ -14,7 +14,8 @@ join_live_dead <- function(){
   # Cap dead biomass if it's greater  than live biomass across the years
   df <- df %>% 
     mutate(D_BM_kgha = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_GE_25_CRM, D_BM_kgha)) %>% 
-    mutate(D_BM_kg = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_abs, D_BM_kg)) 
+    mutate(D_BM_kg = ifelse(D_BM_kgha > BPH_GE_25_CRM, BPH_abs, D_BM_kg)) %>% 
+    mutate(BM_live_2012_kg = BPH_GE_25_CRM*.09)
   
   # Add columns for percent mortality
   df <- df %>% mutate(Percent_Mortality_Biomass = D_BM_kg/BPH_abs)

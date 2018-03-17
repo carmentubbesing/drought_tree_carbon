@@ -38,7 +38,7 @@ calc_dead <- function(){
   }
   
   ### Define years
-  YEARS_NAMES <- c("2012","2013", "2014", "2015", "2016", "2017")
+  YEARS_NAMES <- c("2013", "2014", "2015", "2016", "2017")
   
   ### Define forest types
   for_types <- unique(plots$FORTYPBA)[2:932]
@@ -60,9 +60,7 @@ calc_dead <- function(){
   
   ## Select year(s) and corresponding ADS polygons 
   YEARS <- YEARS_NAMES[k]
-  if(YEARS=="2012") {
-    drought <- drought12
-  } else if(YEARS== "2013"){
+  if(YEARS=="2013") {
     drought <- drought13
   } else if(YEARS== "2014"){
     drought <- drought14
@@ -187,6 +185,6 @@ calc_dead <- function(){
               Pol_2015=sum(Pol_2015), 
               Pol_2016=sum(Pol_2016), 
               Pol_2017=sum(Pol_2017))
-  save(df, file = paste("../results/temp/", layer, "_2012_2017",".Rdata",sep = ""))
-  write.csv(df, file = paste("../results/temp/", layer, "_2012_2017",".csv",sep = ""), row.names = F)
+  save(df, file = paste("../results/temp/", layer, "_2013_2017",".Rdata",sep = ""))
+  write.csv(df, file = paste("../results/temp/", layer, "_2013_2017",".csv",sep = ""), row.names = F)
 }

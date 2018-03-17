@@ -19,6 +19,3 @@ for(i in 1:length(counties)){
   
   biomass_calc()
 }
-
-             
-             

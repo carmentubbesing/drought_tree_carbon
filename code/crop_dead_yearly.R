@@ -1,7 +1,7 @@
 crop_dead_yearly <- function(){
   
   layer <-list.files("../data/active_unit")
-  YEARS_NAMES <- c("2012","2013", "2014", "2015", "2016", "2017")
+  YEARS_NAMES <- c("2013", "2014", "2015", "2016", "2017")
   for(i in 1:length(YEARS_NAMES)){
     YEAR <- YEARS_NAMES[i]
     load(paste("../results/temp/", layer, YEAR, ".Rdata", sep = ""))
