@@ -4,8 +4,8 @@ summarize <- function(){
   
   # Load data
   layer <-list.files("../data/active_unit")
-  load(paste("../results/temp/", layer, "_2012_2017_mask_spdf.Rdata", sep = ""))
-  load(paste("../results/temp/", layer, "_2012_2017_mask.Rdata", sep = ""))
+  load(paste("../results/temp/", layer, "_2013_2017_mask_spdf.Rdata", sep = ""))
+  load(paste("../results/temp/", layer, "_2013_2017_mask.Rdata", sep = ""))
   load("../results/temp/live_lemma.Rdata")
   dead <- df
   

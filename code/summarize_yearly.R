@@ -38,7 +38,7 @@ summarize_yearly <- function(){
     ## Live trees
     Live_Trees <- sum(live_lemma$NO_TREES_PX)
   
-    end_BM_Mg <-  Live_Biomass_Mg  - Dead_Biomass_Mg
+    end_BM_Mg <-  NA
     perc_loss_BM <- (Dead_Biomass_Mg/Live_Biomass_Mg)*100
     perc_loss_trees <- (Dead_Trees/Live_Trees)*100
     

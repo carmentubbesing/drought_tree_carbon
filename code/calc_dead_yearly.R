@@ -45,7 +45,7 @@ calc_dead <- function(){
   
   ### Set up parallel cores for faster runs
   detectCores()
-  no_cores <- detectCores() - 1 # Use all but one core on your computer
+  no_cores <- detectCores() - 2 # Use all but one core on your computer
   c1 <- makeCluster(no_cores)
   
   ### Print and restart time 

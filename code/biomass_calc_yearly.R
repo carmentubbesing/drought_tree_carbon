@@ -1,5 +1,5 @@
 
-biomass_calc <- function() {
+biomass_calc_yearly <- function() {
   strt_total <- Sys.time()
   
   print("Cropping LEMMA")
