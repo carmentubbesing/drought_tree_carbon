@@ -15,7 +15,7 @@ load(file = "../data/CA_counties.Rdata")
 
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 
-for(i in 1:length(counties)){
+for(i in 8:length(counties)){
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
   unlink(active_county, recursive = T)

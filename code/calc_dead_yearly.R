@@ -75,8 +75,16 @@ calc_dead <- function(){
   registerDoParallel(c1)
   
   ## Crop ADS data to the extent of the management unit
+  drought <- gBuffer(drought, width = 0, byid = TRUE)
   drought <- crop(drought, extent(unit)+c(-5000,5000,-5000,5000))
   
+  
+  ## Skip this year if there are no ADS polygons in the county
+  if(length(drought)==0){
+    print(paste("skipping", YEARS, "because there are no overlapping ADS polygons"))
+    next
+  }
+
   ## Define input to the foreach loop
   inputs=1:nrow(drought)
   

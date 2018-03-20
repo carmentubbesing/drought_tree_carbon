@@ -10,6 +10,9 @@ summarize_yearly <- function(){
   table_full <- data.frame()
   for(i in 1:length(YEARS_NAMES)){
     YEAR <- YEARS_NAMES[i]
+    if(file.exists(paste("../results/temp/", layer, "_", YEAR, "_mask_spdf.Rdata", sep = ""))==FALSE){
+      next
+    }
     load(paste("../results/temp/", layer, "_", YEAR, "_mask_spdf.Rdata", sep = ""))
     load(paste("../results/temp/", layer, "_", YEAR, "_mask.Rdata", sep = ""))
     load("../results/temp/live_lemma.Rdata")

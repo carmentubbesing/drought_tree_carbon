@@ -4,6 +4,9 @@ crop_dead_yearly <- function(){
   YEARS_NAMES <- c("2013", "2014", "2015", "2016", "2017")
   for(i in 1:length(YEARS_NAMES)){
     YEAR <- YEARS_NAMES[i]
+    if(file.exists(paste("../results/temp/", layer, YEAR, ".Rdata", sep = ""))==FALSE){
+      next
+    }
     load(paste("../results/temp/", layer, YEAR, ".Rdata", sep = ""))
     df <- results_k
     # Create a key for each pixel (row)
@@ -17,7 +20,6 @@ crop_dead_yearly <- function(){
     xy <- df[,c("x","y")]
     spdf <- SpatialPointsDataFrame(coords=xy, data = df, proj4string =  CRS("+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0
                                                                             +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")  )
-    
     
     # Crop to unit size and shape
     load("../data/transformed/transformed.Rdata")

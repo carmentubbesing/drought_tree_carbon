@@ -32,6 +32,9 @@ join_live_dead_yearly <- function(){
   YEARS_NAMES <- c("2013", "2014", "2015", "2016", "2017")
   for(i in 1:length(YEARS_NAMES)){
     YEAR <- YEARS_NAMES[i]
+    if(file.exists(paste("../results/temp/", layer, "_", YEAR, "_mask",".Rdata",sep = ""))==FALSE){
+      next
+    }
     load(file = paste("../results/temp/", layer, "_", YEAR, "_mask",".Rdata",sep = ""))
     df <- df %>% 
     ungroup() %>% 

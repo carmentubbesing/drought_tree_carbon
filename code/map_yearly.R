@@ -12,7 +12,10 @@ map_yearly <- function(){
   YEARS_NAMES <- c("2013", "2014", "2015", "2016", "2017")
   for(i in 1:length(YEARS_NAMES)){
     YEAR <- YEARS_NAMES[i]
-      
+    layer <-list.files("../data/active_unit")
+    if(file.exists(paste("../results/Results_Table_", YEAR, layer, ".Rdata", sep = ""))==FALSE){
+      next
+    }
     ### LOAD MGMT UNIT BOUNDARIES
     load("../data/transformed/transformed.Rdata")
     unit@data$id = rownames(unit@data)
@@ -23,7 +26,7 @@ map_yearly <- function(){
     unit.cent <- as.data.frame(coordinates(unit))
     
     ### LOAD RESULTS 
-    layer <-list.files("../data/active_unit")
+
     load(paste("../results/Results_Table_", YEAR, layer, ".Rdata", sep = ""))
     load(paste("../results/Results_Spatial_", YEAR, layer, ".Rdata", sep = ""))
     
