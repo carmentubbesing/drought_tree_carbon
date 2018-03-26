@@ -26,7 +26,7 @@ to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 counties@data$NAME
 counties <- subset(counties, counties@data$NAME %in% sierra_counties@data$NAME_PCASE)
 
-for(i in 1:length(counties)){
+for(i in 18:length(counties)){
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
   unlink(active_county, recursive = T)

@@ -60,11 +60,11 @@ aggregate_pixels <- function(){
     raster <- rasterFromXYZ(xyz, crs= crs(spdf))
     # Use function aggregate to make it a coarser raster
     ag <- aggregate(raster, fact = 33, fun = sum)
-    df <- as.data.frame(ag)
+    df <- as.data.frame(ag, xy = T)
     # Save as rasters and .csv
-    setwd("~/drought_tree_carbon/drought_tree_carbon/results/")
-    write.csv(df, file = paste("../results/", layer, "_aggregated", ".csv", sep = ""), row.names = F)
-    setwd("../results/rasters_aggregated/Mar26")
+    setwd("~/drought_tree_carbon/drought_tree_carbon/results/tables_aggregated")
+    write.csv(df, file = paste(layer, "_aggregated", ".csv", sep = ""), row.names = F)
+    setwd("~/drought_tree_carbon/drought_tree_carbon/results/rasters_aggregated/Sierra")
     plot(ag)
     for(i in 1:4){
       name <- paste(layer, "_",names(ag)[i],".tif",sep="")
