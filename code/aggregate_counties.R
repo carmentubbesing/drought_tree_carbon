@@ -9,6 +9,11 @@ source("aggregate_pixels.R")
 
 load(file = "../data/CA_counties.Rdata")
 
+# Load Sierra counties
+setwd("../../sierra_regions/data/sierra_regions/")
+sierra_counties <- readOGR(dsn = "counties_Sierra", layer = "counties_Sierra")
+plot(sierra_counties)
+
 # this section is for if you want to exclude counties in the Southern Sierra
 # nrow(counties)
 # SScounties <- list.dirs("~/drought_tree_carbon/sierra_regions/data/counties/", recursive = F, full.names = F)
@@ -19,8 +24,9 @@ load(file = "../data/CA_counties.Rdata")
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 
 counties@data$NAME
+counties <- subset(counties, counties@data$NAME %in% sierra_counties@data$NAME_PCASE)
 
-for(i in 29:length(counties)){
+for(i in 1:length(counties)){
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
   unlink(active_county, recursive = T)
@@ -34,8 +40,5 @@ for(i in 29:length(counties)){
   writeOGR(obj = county, dsn = lay, layer = lay, driver = "ESRI Shapefile")
   setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
   transform()
-  biomass_calc_yearly()
-  map_yearly()
-  map()
   aggregate_pixels()
 }

@@ -14,9 +14,9 @@ library(sp)
 
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/results")
-ag <- read.csv("Alameda_aggregated.csv")
-load("Results_Table_Alameda.Rdata")
-load("Results_Spatial_Alameda.Rdata")
+ag <- read.csv("Merced_aggregated.csv")
+load("Results_Table_Merced.Rdata")
+load("Results_Spatial_Merced.Rdata")
 ```
 
 ## Change columns to numeric
@@ -29,17 +29,14 @@ head(ag)
 
 
 ```{r}
-str(ag)
-head(ag)
-agt <- lapply(ag,  as.factor)
-sum <- ag %>% 
+sumag <- ag %>% 
   summarise(liveBM = sum(na.omit(BM_live_2012_kg)), deadBM=sum(na.omit(D_BM_kg)), deadT = sum(na.omit(relNO_tot)), liveT = sum(na.omit(NO_TREES_PX)))
-sum            
+sumag            
 ```
 
 ```{r}
-sum$deadBM/sum$liveBM
-sum$deadT/sum$liveT
+sumag$deadBM/sumag$liveBM
+sumag$deadT/sumag$liveT
 ```
 
 # Sum live biomass and live number of trees across the different data sets
@@ -144,21 +141,25 @@ sum(na.omit(raster1[[1]]@data@values))+    sum(na.omit(raster2[[1]]@data@values)
 
 # Not breaking up the raster
 ```{r}
- raster <- rasterFromXYZ(xyz, crs= crs(spdf))
-    # Use function aggregate to make it a coarser raster
-    ag <- aggregate(raster, fact = 33, fun = sum)
-    sum(na.omit(ag[[1]]@data@values))
-    sum(xyz$BM_live_2012_kg) 
-    
-    df <- as.data.frame(ag)
-    
-    # Save as rasters and .csv
-    setwd("~/drought_tree_carbon/drought_tree_carbon/results/")
-    write.csv(df, file = paste("../results/", layer, "_aggregated", ".csv", sep = ""), row.names = F)
-    setwd("../results/rasters_aggregated/Mar26")
-    plot(ag)
-    for(i in 1:4){
-      name <- paste(layer, "_",names(ag)[i],".tif",sep="")
-      writeRaster(ag[[i]], filename = name, driver = "ESRI Shapefile", overwrite = T)
+sum(spdf$BM_live_2012_kg)
+```
+
+## make raster
+```{r}
+xyz <- spdf@data %>% 
+    dplyr::select(x, y, BM_live_2012_kg, D_BM_kg, relNO_tot, NO_TREES_PX)
+sum(xyz$BM_live_2012_kg)
+raster <- rasterFromXYZ(xyz, crs= crs(spdf))
+sum(na.omit(raster[[1]]@data@values))
+```
+
+## aggregate
+```{r}
+ag <- aggregate(raster, fact = 33, fun = sum)
+sum(na.omit(ag[[1]]@data@values))
+sum(xyz$BM_live_2012_kg) 
+
+df <- as.data.frame(ag)
+
 ```
 
