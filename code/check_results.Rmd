@@ -14,9 +14,9 @@ library(sp)
 
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/results/")
-ag <- read.csv("tables_aggregated/Inyo_aggregated.csv")
-load("Results_Table_Inyo.Rdata")
-load("Results_Spatial_Inyo.Rdata")
+ag <- read.csv("tables_aggregated/Madera_aggregated.csv")
+load("Results_Table_Madera.Rdata")
+load("Results_Spatial_Madera.Rdata")
 ```
 
 ## Change columns to numeric
@@ -51,6 +51,12 @@ sum(na.omit(ag$BM_live_2012_kg))
 sum(df$BM_live_2012_kg)/sum(na.omit(ag$BM_live_2012_kg))
 ```
 
+
+.
+.
+.
+.
+.
 Lots of live biomass in the aggregated data are missing. Why? Try the whole aggregation process and check live biomass along the way
 
 # Look for error using the method that does not break up the raster
