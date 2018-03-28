@@ -1,9 +1,10 @@
 ---
-title: "Check_results"
+title: "Check Results"
 author: "Carmen"
-date: "March 23, 2018"
+date: "March 27, 2018"
 output: html_document
 ---
+
 
 ```{r}
 library(tidyverse)
@@ -11,13 +12,67 @@ library(raster)
 library(sp)
 ```
 
+# Set county
+```{r}
+county <- "MH_subsection"
+```
 
+# Load that county's results
+
+## Yearly
+```{r}
+setwd("~/drought_tree_carbon/drought_tree_carbon/code")
+years <- c("2013","2014","2015","2016","2017")
+for(i in 1:length(years)){
+  load(paste("../Results/Results_Table_",  years[i], county,".Rdata", sep = ""))
+  assign(paste( "df", years[i],sep = ""), df)
+  remove(df)
+  load(paste("../Results/Results_Spatial_", years[i], county, ".Rdata", sep = ""))
+  assign(paste("spdf", years[i], sep = ""), spdf)
+  remove(spdf)
+}
+```
+
+## Overall
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/results/")
-ag <- read.csv("tables_aggregated/Madera_aggregated.csv")
-load("Results_Table_Madera.Rdata")
-load("Results_Spatial_Madera.Rdata")
+ag <- read.csv(paste("tables_aggregated/", county, "_aggregated.csv", sep = ""))
+load(paste("Results_Table_", county, ".Rdata", sep = ""))
+load(paste("Results_Spatial_", county, ".Rdata", sep = ""))
 ```
+
+# Look at data table
+```{r}
+head(df)
+head(df2013)
+```
+
+
+# Check that spatial matches table
+```{r}
+sum(na.omit(df2013$D_BM_kg))==sum(na.omit(spdf2013@data$D_BM_kg))
+sum(na.omit(df2014$D_BM_kg))==sum(na.omit(spdf2014@data$D_BM_kg))
+sum(na.omit(df2015$D_BM_kg))==sum(na.omit(spdf2015@data$D_BM_kg))
+sum(na.omit(df2016$D_BM_kg))==sum(na.omit(spdf2016@data$D_BM_kg))
+sum(na.omit(df2017$D_BM_kg))==sum(na.omit(spdf2017@data$D_BM_kg))
+```
+
+# Check that yearly results somewhat match overall results
+```{r}
+sum_years <- sum(na.omit(df2013$D_BM_kg)) + sum(na.omit(df2014$D_BM_kg)) + sum(na.omit(df2015$D_BM_kg)) + sum(na.omit(spdf2015@data$D_BM_kg)) + sum(na.omit(df2017$D_BM_kg))
+sum_years
+
+sum(na.omit(df$D_BM_kg))/sum_years
+
+
+```
+
+```{r}
+
+```
+
+
+# Check that aggregated results match non-aggregated results
 
 ## Change columns to numeric
 ```{r}
@@ -27,10 +82,10 @@ ag[3:6] <- lapply(ag[,3:6],as.numeric)
 head(ag)
 ```
 
-
+## Sum aggregated results
 ```{r}
 sumag <- ag %>% 
-  summarise(liveBM = sum(na.omit(BM_live_2012_kg)), deadBM=sum(na.omit(D_BM_kg)), deadT = sum(na.omit(relNO_tot)), liveT = sum(na.omit(NO_TREES_PX)))
+  summarise(liveBM = sum(na.omit(BM_live_2012_kg)), deadBM=sum(na.omit(D_BM_kg)), deadT = sum(na.omit(NO_TREES_DEAD)), liveT = sum(na.omit(NO_TREES_PX)))
 sumag            
 ```
 
@@ -39,47 +94,37 @@ sumag$deadBM/sumag$liveBM
 sumag$deadT/sumag$liveT
 ```
 
-# Sum live biomass and live number of trees across the different data sets
+## Sum live biomass and live number of trees across the different data sets
 ```{r}
 sum(spdf$BM_live_2012_kg)
 sum(df$BM_live_2012_kg)
 sum(na.omit(ag$BM_live_2012_kg))
 ```
 
-## Troubleshoot
+## The below should equal 1
 ```{r}
 sum(df$BM_live_2012_kg)/sum(na.omit(ag$BM_live_2012_kg))
 ```
 
+# Check results table
 
-.
-.
-.
-.
-.
-Lots of live biomass in the aggregated data are missing. Why? Try the whole aggregation process and check live biomass along the way
-
-# Look for error using the method that does not break up the raster
+## Check for repeated rows - there should be none
 ```{r}
-sum(spdf$BM_live_2012_kg)
+summary(as.numeric(df$pixel_key))
+repeats <- df %>% group_by(x,y) %>% filter(n()>1)
+nrow(repeats) == 0
 ```
 
-## make raster
+## Check for rows with dead biomass data but no live biomass data -- there should be none
 ```{r}
-xyz <- spdf@data %>% 
-    dplyr::select(x, y, BM_live_2012_kg, D_BM_kg, relNO_tot, NO_TREES_PX)
-sum(xyz$BM_live_2012_kg)
-raster <- rasterFromXYZ(xyz, crs= crs(spdf))
-sum(na.omit(raster[[1]]@data@values))
+huh <- df %>% filter(is.na(BM_live_2012_kg) & !is.na(D_BM_kg))
+nrow(huh) == 0
 ```
 
-## aggregate
+## Check for greater than 100% mortality
 ```{r}
-ag <- aggregate(raster, fact = 33, fun = sum)
-sum(na.omit(ag[[1]]@data@values))
-sum(xyz$BM_live_2012_kg) 
-
-df <- as.data.frame(ag)
-
+summary(df$Percent_Mortality_Biomass)
+summary(df$Percent_Mortality_Count)
+max(df$Percent_Mortality_Biomass > 100)==FALSE
 ```
 
