@@ -26,6 +26,9 @@ join_live_dead <- function(){
   # Add a new pixel key
   df$pixel_key <- as.factor(seq(1, nrow(df), by = 1))
   
+  # Take out rows with zero 2012 trees over 25 cm
+  df <- df %>% filter(NO_TREES_PX>0)
+  
   # Save final data frame
   save(df, file = paste("../results/Results_Table_", layer, ".Rdata", sep = ""))
   write.csv(df, file = paste("../results/Results_Table_", layer, ".csv", sep = ""), row.names = F)

@@ -34,6 +34,9 @@ join_live_dead_yearly <- function(){
     # Take out V1 since it's the same as FIA_ID
     df <- df %>% select(-V1)
     
+    # Take out rows with zero 2012 trees over 25 cm
+    df <- df %>% filter(NO_TREES_PX>0)
+    
     # Save final data frame
     save(df, file = paste("../results/Results_Table_", YEAR, layer, ".Rdata", sep = ""))
     write.csv(df, file = paste("../results/Results_Table_", YEAR, layer, ".csv", sep = ""), row.names = F)
