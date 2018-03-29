@@ -1,9 +1,11 @@
 aggregate_pixels <- function(){
+  strt_join <- Sys.time()
+  print("aggregating to 1-km resolution")
   library(raster)
   library(tidyverse)
   
   # 1. Load Rdata with points in spdf
-  layer <-list.files("../data/active_unit")
+  layer <-list.files("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
   load(paste("../results/Results_Spatial_", layer, ".Rdata", sep = ""))
   
   ## Ignore pixels with no starting biomass
@@ -14,7 +16,7 @@ aggregate_pixels <- function(){
   
   # 2. Convert to a raster
   xyz <- spdf@data %>% 
-    dplyr::select(x, y, BM_live_2012_kg, D_BM_kg, relNO_tot, NO_TREES_PX)
+    dplyr::select(x, y, BM_live_2012_kg, D_BM_kg, NO_TREES_DEAD, NO_TREES_PX)
   nrow(xyz)
   # Split in half if it's too large
   if(nrow(xyz) > 10000000){
@@ -71,6 +73,10 @@ aggregate_pixels <- function(){
       writeRaster(ag[[i]], filename = name, driver = "ESRI Shapefile", overwrite = T)
     }
   }
+  
+  strt_join <- Sys.time()
+  print(paste("Aggregating took:"))
+  print(Sys.time() - strt_join)
 }
   
   
