@@ -48,7 +48,10 @@ calc_live <- function(){
   key <- seq(1, nrow(live_lemma)) 
   live_lemma <- cbind(key, live_lemma)
   
+  # Take out pixels with no 2012 live trees over 25 cm
   live_lemma <- subset(live_lemma, !is.na(live_lemma$BPH_GE_25_CRM))
+  live_lemma <- live_lemma %>% filter(NO_TREES_PX>0)
+  
   save(live_lemma, file = paste("../results/temp/live_lemma_", layer, ".Rdata", sep = ""))
   
   ### Convert to a spatial data frame
@@ -59,6 +62,8 @@ calc_live <- function(){
   ## Ignore pixels with no starting biomass
   live_lemma_spdf <- spdf
   save(live_lemma_spdf, file = paste("../results/temp/live_lemma_spdf_", layer, ".Rdata", sep = ""))
+  
+  file.remove("../data/lemma_cropped.Rdata")
   
 }
 
