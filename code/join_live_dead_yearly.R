@@ -31,6 +31,9 @@ join_live_dead_yearly <- function(){
     # Add a new pixel key
     df$pixel_key <- as.factor(seq(1, nrow(df), by = 1))
     
+    # Take out V1 since it's the same as FIA_ID
+    df <- df %>% select(-V1)
+    
     # Save final data frame
     save(df, file = paste("../results/Results_Table_", YEAR, layer, ".Rdata", sep = ""))
     write.csv(df, file = paste("../results/Results_Table_", YEAR, layer, ".csv", sep = ""), row.names = F)
