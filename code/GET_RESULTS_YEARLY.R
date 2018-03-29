@@ -4,6 +4,6 @@ source("map_yearly.R")
 source("map.R")
 
 transform()
-biomass_calc()
+biomass_calc_yearly()
 map_yearly()
 map()
