@@ -35,9 +35,9 @@ biomass_calc_yearly <- function() {
   
   print("Joining dead and live biomass")
   strt_join <- Sys.time()
-  source("join_live_dead.R")
+  #source("join_live_dead.R")
   source("join_live_dead_yearly.R")
-  join_live_dead()
+  #join_live_dead()
   join_live_dead_yearly()
   print("Joining dead and live biomass took:")
   print(Sys.time()-strt_join)
@@ -49,7 +49,7 @@ biomass_calc_yearly <- function() {
   print("Summarizing took:")
   print(Sys.time()-strt_summary)
   
-  print(paste("The whole process for", layer, "took:"))
+  print(paste("The whole biomass calculations for", layer, "took:"))
   print(Sys.time() - strt_total)
 }
 
