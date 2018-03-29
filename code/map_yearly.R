@@ -37,13 +37,13 @@ map_yearly <- function(){
     map_figure <- ggplot()+
       geom_tile(data=df,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
       scale_colour_gradientn(colours = cols,
-                             breaks=c(0,.05,.25,.5,.75,1),
+                             breaks=c(0,5,25,50,75,100),
                              labels=c("","5%","25%","50%","75%","100%"),
-                             limits=c(0,1),
+                             limits=c(0,100),
                              na.value="white")+
       scale_fill_gradientn(colours = cols,
-                           limits=c(0,1),
-                           breaks=c(0,.05,.25,.5,.75,1),
+                           limits=c(0,100),
+                           breaks=c(0,5,25,50,75,100),
                            labels=c("","5%","25%","50%","75%","100%"),
                            na.value="white")+
       theme(axis.line=element_blank(),

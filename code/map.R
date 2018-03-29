@@ -30,13 +30,13 @@ scale_res <- round((extent(spdf)[2]-extent(spdf)[1])/2000, digits =0)
 map_figure <- ggplot()+
   geom_tile(data=df,aes(x=x,y=y,fill = Percent_Mortality_Biomass, color=Percent_Mortality_Biomass))+
   scale_colour_gradientn(colours = cols,
-                         breaks=c(0,.05,.25,.5,.75,1),
+                         breaks=c(0,5,25,50,75,100),
                          labels=c("","5%","25%","50%","75%","100%"),
-                         limits=c(0,1),
+                         limits=c(0,100),
                          na.value="white")+
   scale_fill_gradientn(colours = cols,
-                       limits=c(0,1),
-                       breaks=c(0,.05,.25,.5,.75,1),
+                       limits=c(0,100),
+                       breaks=c(0,5,25,50,75,100),
                        labels=c("","5%","25%","50%","75%","100%"),
                        na.value="white")+
   theme(axis.line=element_blank(),
@@ -51,10 +51,10 @@ map_figure <- ggplot()+
     plot.title = element_text(size = 20), 
     legend.position = c(.85, .85),  
     panel.border = element_rect(colour = "black", fill=NA, size=1))+
-  labs(title=paste("Percent loss of live adult tree\naboveground biomass, 2012-2017,\n", layer, sep = ""))+
+  labs(title=paste("Percent loss of live adult tree\naboveground biomass, 2013-2017,\n", layer, sep = ""))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
   north(data = unit.bound, location = "topleft", scale=.05,symbol=12)+
   scalebar(data=unit.bound, dist = scale_res)+
   coord_fixed(ratio = 1)
-  ggsave(file = paste("../results/map_", layer, ".jpeg", sep = ""), plot = map_figure, width = 7, height = 6)
+ggsave(file = paste("../results/map_", layer, ".jpeg", sep = ""), plot = map_figure, width = 7, height = 6)
 }
