@@ -14,7 +14,7 @@ library(sp)
 
 # Set county
 ```{r}
-county <- "MH_subsection"
+county <- "Amador"
 ```
 
 # Load that county's results
@@ -47,7 +47,6 @@ head(df)
 head(df2013)
 ```
 
-
 # Check that spatial matches table
 ```{r}
 sum(na.omit(df2013$D_BM_kg))==sum(na.omit(spdf2013@data$D_BM_kg))
@@ -59,7 +58,7 @@ sum(na.omit(df2017$D_BM_kg))==sum(na.omit(spdf2017@data$D_BM_kg))
 
 # Check that yearly results somewhat match overall results
 ```{r}
-sum_years <- sum(na.omit(df2013$D_BM_kg)) + sum(na.omit(df2014$D_BM_kg)) + sum(na.omit(df2015$D_BM_kg)) + sum(na.omit(spdf2015@data$D_BM_kg)) + sum(na.omit(df2017$D_BM_kg))
+sum_years <- sum(na.omit(df2013$D_BM_kg)) + sum(na.omit(df2014$D_BM_kg)) + sum(na.omit(df2015$D_BM_kg)) + sum(na.omit(spdf2016@data$D_BM_kg)) + sum(na.omit(df2017$D_BM_kg))
 sum_years
 
 sum(na.omit(df$D_BM_kg))/sum_years
@@ -125,6 +124,13 @@ nrow(huh) == 0
 ```{r}
 summary(df$Percent_Mortality_Biomass)
 summary(df$Percent_Mortality_Count)
-max(df$Percent_Mortality_Biomass > 100)==FALSE
+max(na.omit(df$Percent_Mortality_Biomass) > 100)==FALSE
+max(na.omit(df$Percent_Mortality_Count) > 100)==FALSE
+```
+
+# Check for rows with no pre-mortality biomass
+```{r}
+df2014 %>% filter(NO_TREES_PX == 0) %>% summarise(n())
+df %>% filter(NO_TREES_PX == 0) %>% summarise(n())
 ```
 
