@@ -1,7 +1,6 @@
 calc_live <- function(){
   
   ##### Calculate live biomass directly from LEMMA data 
-  strt<-Sys.time()
   
   ### Open LEMMA GNN data
   load("../data/lemma_cropped.Rdata")
@@ -17,7 +16,7 @@ calc_live <- function(){
   for_types <- unique(plots$FORTYPBA)[2:932]
   
   # fit the cropped LEMMA data to the shape of the polygon, unless the polygon is too small to do so
-  clip2 <- mask(clip1, unit) #takes a long time for SNF for some reason
+  clip2 <- mask(clip1, unit) #takes a long time for some reason
   remove(clip1)
   pcoords <- cbind(clip2@data@values, coordinates(clip2)) # save the coordinates of each pixel
   pcoords <- as.data.frame(pcoords)
@@ -49,18 +48,17 @@ calc_live <- function(){
   key <- seq(1, nrow(live_lemma)) 
   live_lemma <- cbind(key, live_lemma)
   
-  save(live_lemma, file = "../results/temp/live_lemma.Rdata")
+  live_lemma <- subset(live_lemma, !is.na(live_lemma$BPH_GE_25_CRM))
+  save(live_lemma, file = paste("../results/temp/live_lemma_", layer, ".Rdata", sep = ""))
   
   ### Convert to a spatial data frame
   xy <- live_lemma[,c("x","y")]
   spdf <- SpatialPointsDataFrame(coords=xy, data = live_lemma, proj4string = crs(clip2))
   
   ### Rename spatial data frame
+  ## Ignore pixels with no starting biomass
   live_lemma_spdf <- spdf
-  save(live_lemma_spdf, file = "../results/temp/live_lemma_spdf.Rdata")
-  
-  print("Calculating live biomass")
-  print(Sys.time()-strt)
+  save(live_lemma_spdf, file = paste("../results/temp/live_lemma_spdf_", layer, ".Rdata", sep = ""))
   
 }
 
