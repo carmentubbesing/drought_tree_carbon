@@ -15,7 +15,7 @@ summarize_yearly <- function(){
     }
     load(paste("../results/temp/", layer, "_", YEAR, "_mask_spdf.Rdata", sep = ""))
     load(paste("../results/temp/", layer, "_", YEAR, "_mask.Rdata", sep = ""))
-    load("../results/temp/live_lemma.Rdata")
+    load(file = paste("../results/temp/live_lemma_", layer, ".Rdata", sep = ""))
     dead <- df
     
     # Convert to Mg
