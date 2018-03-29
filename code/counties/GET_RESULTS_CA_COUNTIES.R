@@ -57,6 +57,7 @@ for(i in 13:length(counties)){
   writeOGR(obj = county, dsn = lay, layer = lay, driver = "ESRI Shapefile")
   setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
   transform()
+  
   biomass_calc_yearly()
   map_yearly()
   map()

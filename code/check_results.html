@@ -125,12 +125,12 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ----------------------------- tidyverse 1.2.1 --</code></pre>
+<pre><code>## -- Attaching packages ---------------------------------------------------------------------------------------------------------- tidyverse 1.2.1 --</code></pre>
 <pre><code>## v ggplot2 2.2.1.9000     v purrr   0.2.4     
 ## v tibble  1.4.2          v dplyr   0.7.4     
 ## v tidyr   0.7.2          v stringr 1.2.0     
 ## v readr   1.1.1          v forcats 0.2.0</code></pre>
-<pre><code>## -- Conflicts -------------------------------- tidyverse_conflicts() --
+<pre><code>## -- Conflicts ------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(raster)</code></pre>
@@ -149,7 +149,7 @@ $(document).ready(function () {
 <pre class="r"><code>library(sp)</code></pre>
 <div id="set-county" class="section level1">
 <h1>Set county</h1>
-<pre class="r"><code>county &lt;- &quot;MH_subsection&quot;</code></pre>
+<pre class="r"><code>county &lt;- &quot;Amador&quot;</code></pre>
 </div>
 <div id="load-that-countys-results" class="section level1">
 <h1>Load that county’s results</h1>
@@ -180,46 +180,46 @@ load(paste(&quot;Results_Spatial_&quot;, county, &quot;.Rdata&quot;, sep = &quot
 <pre><code>## # A tibble: 6 x 23
 ##   pixel_key        x      y BM_tree_kg D_BM_kg D_BM_kgha Pol_2012 Pol_2013
 ##   &lt;fct&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 1         -2004900 1.71e6        578   10868    120759        0        0
-## 2 2         -2004900 1.71e6        578   10868    120759        0        0
-## 3 3         -2004900 1.71e6        578   10868    120759        0        0
-## 4 4         -2004870 1.71e6        578   10868    120759        0        0
-## 5 5         -2004870 1.71e6        731   14358    159531        0        0
-## 6 6         -2004870 1.71e6       1015    6196     68850        0        0
+## 1 1         -2142810 1.98e6     538    806       8959           0        0
+## 2 2         -2142810 1.98e6     538    806       8959           0        0
+## 3 3         -2138220 1.98e6     836    418       4644           0        0
+## 4 4         -2138220 1.98e6     836    418       4644           0        0
+## 5 5         -2135760 1.99e6       5.49   0.387      4.30        0        0
+## 6 6         -2135760 1.99e6     429    121       1346           0        0
 ## # ... with 15 more variables: Pol_2014 &lt;dbl&gt;, Pol_2015 &lt;dbl&gt;,
 ## #   Pol_2016 &lt;dbl&gt;, Pol_2017 &lt;dbl&gt;, key &lt;int&gt;, FIA_ID &lt;dbl&gt;,
 ## #   TPH_GE_25 &lt;dbl&gt;, BPH_GE_25_CRM &lt;dbl&gt;, FORTYPBA &lt;fct&gt;, TREEPLBA &lt;fct&gt;,
 ## #   NO_TREES_PX &lt;dbl&gt;, BM_live_2012_kg &lt;dbl&gt;, NO_TREES_DEAD &lt;dbl&gt;,
 ## #   Percent_Mortality_Biomass &lt;dbl&gt;, Percent_Mortality_Count &lt;dbl&gt;</code></pre>
 <pre class="r"><code>head(df2013)</code></pre>
-<pre><code>##   pixel_key     V1        x       y  n        freq   live.ratio BM_tree_kg
-## 1         1 106270 -2003700 1705740 29 0.004358281 9.534991e-05   501.3639
-## 2         2 139494 -2003670 1705740 91 0.013675984 2.522411e-04  1149.0853
-## 3         3 139494 -2003640 1705740 91 0.013675984 2.522411e-04  1149.0853
-## 4         4  73381 -2004000 1705710 16 0.002404569 2.113403e-04   578.3886
-## 5         5  73381 -2003970 1705710 16 0.002404569 2.113403e-04   578.3886
-## 6         6 139494 -2003940 1705710 91 0.013675984 2.522411e-04  1149.0853
-##     D_BM_kg trunc D_BM_kgha RPT_YR POL_ID  key FIA_ID TPH_GE_25
-## 1  70.79921     0  786.6579   2013  20699  466 106270  120.7404
-## 2 429.26280     0 4769.5867   2013  20699 1449 139494  319.4098
-## 3 429.26280     0 4769.5867   2013  20699 1463 139494  319.4098
-## 4 181.03277     0 2011.4752   2013  20699   91  73381  267.6176
-## 5 181.03277     0 2011.4752   2013  20699  134  73381  267.6176
-## 6 429.26280     0 4769.5867   2013  20699 1478 139494  319.4098
-##   BPH_GE_25_CRM     FORTYPBA TREEPLBA NO_TREES_PX BM_live_2012_kg
-## 1      60534.88    PIJE/PILA     PIJE    10.86664        5448.139
-## 2     367029.10 CADE27/ABGRC   CADE27    28.74688       33032.619
-## 3     367029.10 CADE27/ABGRC   CADE27    28.74688       33032.619
-## 4     154786.98  CADE27/QUKE   CADE27    24.08558       13930.828
-## 5     154786.98  CADE27/QUKE   CADE27    24.08558       13930.828
-## 6     367029.10 CADE27/ABGRC   CADE27    28.74688       33032.619
-##   NO_TREES_DEAD Percent_Mortality_Biomass Percent_Mortality_Count
-## 1     0.1412132                  1.299512                1.299512
-## 2     0.3735691                  1.299512                1.299512
-## 3     0.3735691                  1.299512                1.299512
-## 4     0.3129950                  1.299512                1.299512
-## 5     0.3129950                  1.299512                1.299512
-## 6     0.3735691                  1.299512                1.299512</code></pre>
+<pre><code>##   pixel_key        x       y n      freq live.ratio BM_tree_kg   D_BM_kg
+## 1         1 -2095680 1990200 2 0.6666667  0.5000000  1547.0508 1547.0508
+## 2         2 -2095650 1990200 2 0.6666667  0.5000000  1547.0508 1547.0508
+## 3         4 -2095050 1989570 3 1.0000000  0.3333333  1349.4188  449.8063
+## 4         5 -2095020 1989570 3 1.0000000  0.3333333  1349.4188  449.8063
+## 5         6 -2095050 1989540 3 1.0000000  0.3333333  1349.4188  449.8063
+## 6         7 -2093790 1988970 3 0.7500000  0.2822822   178.4026  100.7198
+##   trunc D_BM_kgha RPT_YR POL_ID     key FIA_ID TPH_GE_25 BPH_GE_25_CRM
+## 1     0 17189.453   2013  31176  155429  72475  177.3488     274367.60
+## 2     0 17189.453   2013  31176  156302  72475  177.3488     274367.60
+## 3     0  4997.848   2013  31177 1276759 148368  188.1552     253900.17
+## 4     0  4997.848   2013  31177 1276796 148368  188.1552     253900.17
+## 5     0  4997.848   2013  31177 1277396 148368  188.1552     253900.17
+## 6     0  1119.108   2013  31178  991727 127600   89.2248      15917.94
+##      FORTYPBA TREEPLBA NO_TREES_PX BM_live_2012_kg NO_TREES_DEAD
+## 1 CADE27/PIPO   CADE27   15.961392       24693.084     1.0000000
+## 2 CADE27/PIPO   CADE27   15.961392       24693.084     1.0000000
+## 3 PIPO/CADE27     PIPO   16.933968       22851.015     0.3333333
+## 4 PIPO/CADE27     PIPO   16.933968       22851.015     0.3333333
+## 5 PIPO/CADE27     PIPO   16.933968       22851.015     0.3333333
+## 6        PIPO     PIPO    8.030232        1432.614     0.5645644
+##   Percent_Mortality_Biomass Percent_Mortality_Count
+## 1                  6.265118                6.265118
+## 2                  6.265118                6.265118
+## 3                  1.968430                1.968430
+## 4                  1.968430                1.968430
+## 5                  1.968430                1.968430
+## 6                  7.030487                7.030487</code></pre>
 </div>
 <div id="check-that-spatial-matches-table" class="section level1">
 <h1>Check that spatial matches table</h1>
@@ -236,11 +236,11 @@ load(paste(&quot;Results_Spatial_&quot;, county, &quot;.Rdata&quot;, sep = &quot
 </div>
 <div id="check-that-yearly-results-somewhat-match-overall-results" class="section level1">
 <h1>Check that yearly results somewhat match overall results</h1>
-<pre class="r"><code>sum_years &lt;- sum(na.omit(df2013$D_BM_kg)) + sum(na.omit(df2014$D_BM_kg)) + sum(na.omit(df2015$D_BM_kg)) + sum(na.omit(spdf2015@data$D_BM_kg)) + sum(na.omit(df2017$D_BM_kg))
+<pre class="r"><code>sum_years &lt;- sum(na.omit(df2013$D_BM_kg)) + sum(na.omit(df2014$D_BM_kg)) + sum(na.omit(df2015$D_BM_kg)) + sum(na.omit(spdf2016@data$D_BM_kg)) + sum(na.omit(df2017$D_BM_kg))
 sum_years</code></pre>
-<pre><code>## [1] 31164894</code></pre>
+<pre><code>## [1] 796282875</code></pre>
 <pre class="r"><code>sum(na.omit(df$D_BM_kg))/sum_years</code></pre>
-<pre><code>## [1] 0.9122925</code></pre>
+<pre><code>## [1] 0.9971836</code></pre>
 </div>
 <div id="check-that-aggregated-results-match-non-aggregated-results" class="section level1">
 <h1>Check that aggregated results match non-aggregated results</h1>
@@ -248,39 +248,43 @@ sum_years</code></pre>
 <h2>Change columns to numeric</h2>
 <pre class="r"><code>head(ag)</code></pre>
 <pre><code>##          x       y BM_live_2012_kg D_BM_kg NO_TREES_DEAD NO_TREES_PX
-## 1 -2004420 1705470        12559132 9695699      9833.559   12757.439
-## 2 -2003430 1705470         9177550 7077936      5307.520    6876.929
-## 3 -2004420 1704480         8308451 6547235      5555.325    7055.196
-## 4 -2003430 1704480         6451405 5110628      3654.912    4617.783</code></pre>
+## 1 -2142570 2003580              NA      NA            NA          NA
+## 2 -2141580 2003580              NA      NA            NA          NA
+## 3 -2140590 2003580              NA      NA            NA          NA
+## 4 -2139600 2003580              NA      NA            NA          NA
+## 5 -2138610 2003580              NA      NA            NA          NA
+## 6 -2137620 2003580              NA      NA            NA          NA</code></pre>
 <pre class="r"><code>ag[3:6] &lt;- lapply(ag[,3:6],as.character)
 ag[3:6] &lt;- lapply(ag[,3:6],as.numeric)
 head(ag)</code></pre>
 <pre><code>##          x       y BM_live_2012_kg D_BM_kg NO_TREES_DEAD NO_TREES_PX
-## 1 -2004420 1705470        12559132 9695699      9833.559   12757.439
-## 2 -2003430 1705470         9177550 7077936      5307.520    6876.929
-## 3 -2004420 1704480         8308451 6547235      5555.325    7055.196
-## 4 -2003430 1704480         6451405 5110628      3654.912    4617.783</code></pre>
+## 1 -2142570 2003580              NA      NA            NA          NA
+## 2 -2141580 2003580              NA      NA            NA          NA
+## 3 -2140590 2003580              NA      NA            NA          NA
+## 4 -2139600 2003580              NA      NA            NA          NA
+## 5 -2138610 2003580              NA      NA            NA          NA
+## 6 -2137620 2003580              NA      NA            NA          NA</code></pre>
 </div>
 <div id="sum-aggregated-results" class="section level2">
 <h2>Sum aggregated results</h2>
 <pre class="r"><code>sumag &lt;- ag %&gt;% 
   summarise(liveBM = sum(na.omit(BM_live_2012_kg)), deadBM=sum(na.omit(D_BM_kg)), deadT = sum(na.omit(NO_TREES_DEAD)), liveT = sum(na.omit(NO_TREES_PX)))
 sumag            </code></pre>
-<pre><code>##     liveBM   deadBM    deadT    liveT
-## 1 36496538 28431498 24351.32 31307.35</code></pre>
+<pre><code>##        liveBM    deadBM  deadT    liveT
+## 1 10044734560 794040201 892662 12533869</code></pre>
 <pre class="r"><code>sumag$deadBM/sumag$liveBM</code></pre>
-<pre><code>## [1] 0.779019</code></pre>
+<pre><code>## [1] 0.07905039</code></pre>
 <pre class="r"><code>sumag$deadT/sumag$liveT</code></pre>
-<pre><code>## [1] 0.7778147</code></pre>
+<pre><code>## [1] 0.07121998</code></pre>
 </div>
 <div id="sum-live-biomass-and-live-number-of-trees-across-the-different-data-sets" class="section level2">
 <h2>Sum live biomass and live number of trees across the different data sets</h2>
 <pre class="r"><code>sum(spdf$BM_live_2012_kg)</code></pre>
-<pre><code>## [1] 36496538</code></pre>
+<pre><code>## [1] 10044734560</code></pre>
 <pre class="r"><code>sum(df$BM_live_2012_kg)</code></pre>
-<pre><code>## [1] 36496538</code></pre>
+<pre><code>## [1] 10044734560</code></pre>
 <pre class="r"><code>sum(na.omit(ag$BM_live_2012_kg))</code></pre>
-<pre><code>## [1] 36496538</code></pre>
+<pre><code>## [1] 10044734560</code></pre>
 </div>
 <div id="the-below-should-equal-1" class="section level2">
 <h2>The below should equal 1</h2>
@@ -294,7 +298,7 @@ sumag            </code></pre>
 <h2>Check for repeated rows - there should be none</h2>
 <pre class="r"><code>summary(as.numeric(df$pixel_key))</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     1.0   376.2   751.5   751.5  1126.8  1502.0</code></pre>
+##       1  317018  618976  617322  920369 1221761</code></pre>
 <pre class="r"><code>repeats &lt;- df %&gt;% group_by(x,y) %&gt;% filter(n()&gt;1)
 nrow(repeats) == 0</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -308,14 +312,27 @@ nrow(huh) == 0</code></pre>
 <div id="check-for-greater-than-100-mortality" class="section level2">
 <h2>Check for greater than 100% mortality</h2>
 <pre class="r"><code>summary(df$Percent_Mortality_Biomass)</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   42.57   78.02   78.02   77.67   79.32   80.38</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    -6.2     4.6     8.9    18.1    19.6   100.0  848992</code></pre>
 <pre class="r"><code>summary(df$Percent_Mortality_Count)</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   42.57   78.02   78.02   77.67   79.32   80.38</code></pre>
-<pre class="r"><code>max(df$Percent_Mortality_Biomass &gt; 100)==FALSE</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    -6.2     4.6     8.9    18.1    20.1   100.0  848354</code></pre>
+<pre class="r"><code>max(na.omit(df$Percent_Mortality_Biomass) &gt; 100)==FALSE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>max(na.omit(df$Percent_Mortality_Count) &gt; 100)==FALSE</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 </div>
+</div>
+<div id="check-for-rows-with-no-pre-mortality-biomass" class="section level1">
+<h1>Check for rows with no pre-mortality biomass</h1>
+<pre class="r"><code>df2014 %&gt;% filter(NO_TREES_PX == 0) %&gt;% summarise(n())</code></pre>
+<pre><code>##   n()
+## 1   0</code></pre>
+<pre class="r"><code>df %&gt;% filter(NO_TREES_PX == 0) %&gt;% summarise(n())</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `n()`
+##   &lt;int&gt;
+## 1     0</code></pre>
 </div>
 
 
