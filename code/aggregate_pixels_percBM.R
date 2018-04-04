@@ -6,7 +6,7 @@ aggregate_pixels <- function(){
   
   # 1. Load Rdata with points in spdf
   layer <-list.files("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
-  load(paste("../results/Results_Spatial_", layer, ".Rdata", sep = ""))
+  load(paste("../results/Counties/Results_Spatial_", layer, ".Rdata", sep = ""))
   
     ## Ignore pixels with no starting biomass
   spdf <- subset(spdf, !is.na(spdf@data$BPH_GE_25_CRM))
@@ -25,7 +25,7 @@ aggregate_pixels <- function(){
   } else{
     raster <- rasterFromXYZ(xyz, crs= crs(spdf))
     # Use function aggregate to make it a coarser raster
-    ag <- aggregate(raster, fact = 33, fun = mean)
+    ag <- aggregate(raster, fact = 10, fun = mean)
     df <- as.data.frame(ag, xy = T)
     # Save as rasters and .csv
     setwd("~/drought_tree_carbon/drought_tree_carbon/results/tables_aggregated")

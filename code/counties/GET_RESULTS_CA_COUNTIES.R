@@ -21,9 +21,13 @@ plot(sierra_counties)
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 
 counties@data$NAME
-counties <- subset(counties, !counties@data$NAME %in% sierra_counties@data$NAME_PCASE | counties@data$NAME %in% c("Los Angeles", "San Bernardino"))
+counties <- subset(counties, counties@data$NAME %in% sierra_counties@data$NAME_PCASE & !(counties@data$NAME %in% c("Los Angeles", "San Bernardino")))
 counties@data$NAME
 plot(counties)
+
+setwd("~/drought_tree_carbon/")
+writeOGR(obj = counties, dsn = "sierra_counties_shapefile", layer = "sierra_counties", driver = "ESRI Shapefile")
+setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
 
 
 for(i in 19:length(counties)){
