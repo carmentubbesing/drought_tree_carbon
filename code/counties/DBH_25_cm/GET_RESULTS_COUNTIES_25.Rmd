@@ -1,3 +1,12 @@
+---
+title: "Get results for county-level live and dead biomass calculations"
+author: "Carmen"
+date: "July 27, 2018"
+output: html_document
+---
+
+# Pull in functions
+```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
 library(rgeos)
 library(rgdal)
@@ -6,17 +15,28 @@ source("biomass_calc_yearly.R")
 source("map_yearly.R")
 source("map.R")
 source("aggregate_pixels.R")
+```
 
+# Look at counties
+```{r}
 load(file = "../data/CA_counties.Rdata")
-
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
-
 counties@data$NAME
 plot(counties)
 setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
+```
+
+## Take out San Bernardino because it's too big to do all at once
+```{r}
+sb <- counties[counties$NAME == "San Bernardino",]
+counties <- counties[counties$NAME != "San Bernardino",]
+plot(counties)
+```
 
 
-for(i in 19:length(counties)){
+# Loop the functions over all counties except San Bernardino
+```{r}
+for(i in 1:length(counties)){
   print(i)
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
@@ -37,11 +57,14 @@ for(i in 19:length(counties)){
   map()
   aggregate_pixels()
 }
+```
+
 
 # Do San Bernardino separately because it's too big for my RAM to do on its own
 
+
 ## Split the San Bernardino polygon into two chunks
-sb <- counties[counties$NAME == "San Bernardino",]
+```{r}
 plot(sb)
 esb <- extent(sb)
 halfway <- extent(sb)[2] - (extent(sb)[2] - extent(sb)[1])/2
@@ -51,8 +74,16 @@ sb1 <- crop(sb, e1)
 sb2 <- crop(sb, e2)
 plot(sb1, add = T, col = "pink")
 plot(sb2, add = T, col = "light blue")
+```
+
+## Save the two chunks 
+```{r}
+save(sb1, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.Rdata")
+save(sb2, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.Rdata")
+```
 
 ## Loop over the two of them
+```{r}
 counties <- c(sb1, sb2)
 for(i in 1:length(counties)){
   print(i)
@@ -76,3 +107,6 @@ for(i in 1:length(counties)){
   map()
   aggregate_pixels()
 }
+```
+
+
