@@ -67,9 +67,9 @@ for(i in 1:length(counties)){
 ```{r}
 plot(sb)
 esb <- extent(sb)
-halfway <- extent(sb)[2] - (extent(sb)[2] - extent(sb)[1])/2
-e1 <- extent(esb[1], halfway, esb[3], esb[4])
-e2 <- extent(halfway, esb[2], esb[3], esb[4])
+halfway <- extent(sb)[4] - (extent(sb)[4] - extent(sb)[3])/2
+e1 <- extent(esb[1], esb[2], halfway, esb[4])
+e2 <- extent(esb[1], esb[2], esb[3], halfway)
 sb1 <- crop(sb, e1)
 sb2 <- crop(sb, e2)
 plot(sb1, add = T, col = "pink")
@@ -82,7 +82,7 @@ save(sb1, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.
 save(sb2, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.Rdata")
 ```
 
-## Loop over the two of them
+## Repeat the above code for sb1 and sb2
 ```{r}
 counties <- c(sb1, sb2)
 for(i in 1:length(counties)){
@@ -108,5 +108,3 @@ for(i in 1:length(counties)){
   aggregate_pixels()
 }
 ```
-
-
