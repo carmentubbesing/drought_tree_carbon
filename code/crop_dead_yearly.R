@@ -9,6 +9,13 @@ crop_dead_yearly <- function(){
     }
     load(paste("../results/temp/", layer, YEAR, ".Rdata", sep = ""))
     df <- results_k
+    
+    # Skip if no rows
+    if(class(df)=="NULL"){
+      print(paste("skipping", YEAR, "because no dead biomass"))
+      next
+    }
+    
     # Create a key for each pixel (row)
     pixel_key <- seq(1, nrow(df))
     df$pixel_key <- pixel_key
@@ -20,7 +27,6 @@ crop_dead_yearly <- function(){
     xy <- df[,c("x","y")]
     spdf <- SpatialPointsDataFrame(coords=xy, data = df, proj4string =  CRS("+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0
                                                                             +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")  )
-    
     # Crop to unit size and shape
     load("../data/transformed/transformed.Rdata")
     in_unit <- foreach(i=1:nrow(unit), .combine = rbind,.errorhandling="remove") %dopar% {
