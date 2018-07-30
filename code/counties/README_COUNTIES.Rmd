@@ -10,6 +10,17 @@ Calculate the biomass of trees that have died in recent drought/insect mortality
 
 This is a spinoff of github.com/WoodResourcesGroup/EPIC_AllPowerLabs/tree/master/Biomass
 
+# Script sequence for each of DBH_3_cm and DBH_25_cm
+
+1.  `GET_RESULTS_COUNTIES_*.Rmd` executes the following in this order for each county or, in the case of San Bernardino, half county:
+    * empties `data/active_unit` folder
+    * saves county perimeter from `data/CA_counties` in the folder `data/active_unit`
+    * transform()
+    * biomass_calc_yearly()
+    * map_yearly()
+    * map()
+    * aggregate_pixels()
+
 
 # Output Variables
 
