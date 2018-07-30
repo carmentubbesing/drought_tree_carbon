@@ -17,7 +17,7 @@ setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties")
 load("Results_Spatial_Orange.Rdata")
 names(spdf)
 spdf@data <- spdf@data %>% 
-  select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
+  dplyr::select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
 ```
 
 # Rename to shorter names
@@ -59,11 +59,19 @@ save(spdf, file = "Orange25.Rdata")
 
 
 # Loop it across all counties
+
+## Load and prep county perimeters
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/")
 load(file = "data/CA_counties.Rdata")
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
-counties@data$NAME
+sort(counties@data$NAME)
+counties <- counties[counties$NAME != "San Bernardino",]
+plot(counties)
+```
+
+## Loop it across all counties except San Bernardino (which is too big to do all at once)
+```{r}
 plot(counties)
 for(i in 1:length(counties)){
   print(i)
@@ -82,7 +90,7 @@ for(i in 1:length(counties)){
   result_file <- paste("Results_Spatial_", lay, ".Rdata", sep = "")
   load(result_file)
   spdf@data <- spdf@data %>% 
-    select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
+    dplyr::select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
   spdf@data <- spdf@data %>% 
     rename(PercDeadBM = Percent_Mortality_Biomass) %>% 
     rename(DeadBMkg = D_BM_kg) %>% 
@@ -93,6 +101,32 @@ for(i in 1:length(counties)){
   setwd("~/drought_tree_carbon/drought_tree_carbon/results/IGIS")
   final_file <- paste(lay, "25.Rdata", sep = "") 
   save(spdf, file = final_file)
+  plot(spdf, add = T, pch = ".")
+}
+```
+
+# Do the same for just San Bernardino northern and southern halves
+
+
+```{r}
+sb <- c("San Bernardino 1", "San Bernardino 2")
+for(i in c(1,2)){
+  lay <- sb[i]
+  result_file <- paste("~/drought_tree_carbon/drought_tree_carbon/results/counties/Results_Spatial_", lay, ".Rdata", sep = "")
+  load(result_file)
+  spdf@data <- spdf@data %>% 
+    dplyr::select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
+  spdf@data <- spdf@data %>% 
+    rename(PercDeadBM = Percent_Mortality_Biomass) %>% 
+    rename(DeadBMkg = D_BM_kg) %>% 
+    rename(LiveBMkg = BM_live_2012_kg)
+  spdf@data <- spdf@data %>% 
+    mutate(PercDeadBM = ifelse(is.na(PercDeadBM), 0, PercDeadBM)) %>% 
+    mutate(DeadBMkg = ifelse(is.na(DeadBMkg ), 0, DeadBMkg)) 
+  setwd("~/drought_tree_carbon/drought_tree_carbon/results/IGIS")
+  final_file <- paste(lay, " 25.Rdata", sep = "") 
+  save(spdf, file = final_file)
+  plot(spdf, add = T, pch = ".")
 }
 ```
 
