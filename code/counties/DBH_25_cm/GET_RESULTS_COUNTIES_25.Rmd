@@ -19,6 +19,7 @@ source("aggregate_pixels.R")
 
 # Look at counties
 ```{r}
+setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
 load(file = "../data/CA_counties.Rdata")
 to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 counties@data$NAME
@@ -36,7 +37,7 @@ plot(counties)
 
 # Loop the functions over all counties except San Bernardino
 ```{r}
-for(i in 1:length(counties)){
+for(i in 32:length(counties)){
   print(i)
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
@@ -79,7 +80,7 @@ plot(sb2, add = T, col = "light blue")
 ## Save the two chunks 
 ```{r}
 save(sb1, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.Rdata")
-save(sb2, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino1.Rdata")
+save(sb2, file = "~/drought_tree_carbon/drought_tree_carbon/data/SanBernardino2.Rdata")
 ```
 
 ## Repeat the above code for sb1 and sb2
@@ -102,7 +103,7 @@ for(i in 1:length(counties)){
   setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
   transform()
   
-  biomass_calc_yearly()
+  biomass_calc_yearly() # Calculating live biomass takes the most time by far of any step in counties with sparse mortality, so try to only do that once
   map_yearly()
   map()
   aggregate_pixels()
