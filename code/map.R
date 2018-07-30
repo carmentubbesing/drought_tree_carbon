@@ -49,7 +49,7 @@ map_figure <- ggplot()+
     legend.title=element_blank(),
     plot.margin=unit(c(.5,.5,.5,.5), "cm"),
     plot.title = element_text(size = 20), 
-    legend.position = c(.85, .85),  
+    legend.position = c(.25, .25),  
     panel.border = element_rect(colour = "black", fill=NA, size=1))+
   labs(title=paste("Percent loss of live adult tree\naboveground biomass, 2013-2017,\n", layer, sep = ""))+
   geom_path(data=unit.bound, aes(x=long,y=lat,group=group),color="black")+
