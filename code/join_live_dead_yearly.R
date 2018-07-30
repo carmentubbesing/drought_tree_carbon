@@ -32,7 +32,7 @@ join_live_dead_yearly <- function(){
     df$pixel_key <- as.factor(seq(1, nrow(df), by = 1))
     
     # Take out V1 since it's the same as FIA_ID
-    df <- df %>% select(-V1)
+    df <- df %>% dplyr::select(-V1)
     
     # Take out rows with zero 2012 trees over 25 cm
     df <- df %>% filter(NO_TREES_PX>0)
