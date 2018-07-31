@@ -9,6 +9,7 @@ output: html_document
 require(tidyverse)
 require(rgeos)
 require(rgdal)
+require(raster)
 ```
 
 # Pull up one county and check it
@@ -64,16 +65,19 @@ save(spdf, file = "Orange25.Rdata")
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/")
 load(file = "data/CA_counties.Rdata")
+counties <- spTransform(counties, crs(spdf))
 sort(counties@data$NAME)
-counties <- counties[counties$NAME != "San Bernardino",]
+counties <- counties[!counties$NAME %in% c("San Bernardino","Imperial"),]
 plot(counties)
 ```
 
 ## Loop it across all counties except San Bernardino (which is too big to do all at once)
 ```{r}
 plot(counties)
-for(i in 1:length(counties)){
+for(i in 47:length(counties)){
   print(i)
+  county <- counties[i,]
+  lay <- as.character(county@data$NAME)
   setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties/Results_spatial/")
   result_file <- paste("Results_Spatial_", lay, ".Rdata", sep = "")
   load(result_file)
@@ -89,13 +93,37 @@ for(i in 1:length(counties)){
   setwd("~/drought_tree_carbon/drought_tree_carbon/results/IGIS")
   final_file <- paste(lay, "25.Rdata", sep = "") 
   save(spdf, file = final_file)
-  plot(spdf, add = T, pch = ".")
+  plot(spdf, add = T, pch = ".", col = i)
 }
 ```
 
+# Reformat live biomass from Imperial county 
+```{r}
+load("~/drought_tree_carbon/drought_tree_carbon/results/Counties/Results_spatial/live_lemma_spdf_Imperial.Rdata")
+spdf <- live_lemma_spdf
+lay <- "Imperial"
+spdf@data <- spdf@data %>% 
+  mutate(BM_live_2012_kg = BPH_GE_25_CRM*.09) %>% 
+  mutate(pixel_key = as.factor(seq(1, nrow(spdf), by = 1))) %>% 
+  mutate(Percent_Mortality_Biomass = 0) %>% 
+  mutate(D_BM_kg = 0) %>% 
+  dplyr::select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
+
+spdf@data <- spdf@data %>% 
+  rename(PercDeadBM = Percent_Mortality_Biomass) %>% 
+  rename(DeadBMkg = D_BM_kg) %>% 
+  rename(LiveBMkg = BM_live_2012_kg)
+spdf@data <- spdf@data %>% 
+  mutate(PercDeadBM = ifelse(is.na(PercDeadBM), 0, PercDeadBM)) %>% 
+  mutate(DeadBMkg = ifelse(is.na(DeadBMkg ), 0, DeadBMkg)) 
+setwd("~/drought_tree_carbon/drought_tree_carbon/results/IGIS")
+final_file <- paste(lay, "25.Rdata", sep = "") 
+save(spdf, file = final_file)
+plot(spdf, add = T, pch = ".", col = (i+1))
+```
+
+
 # Do the same for just San Bernardino northern and southern halves
-
-
 ```{r}
 sb <- c("San Bernardino 1", "San Bernardino 2")
 for(i in c(1,2)){
@@ -114,7 +142,7 @@ for(i in c(1,2)){
   setwd("~/drought_tree_carbon/drought_tree_carbon/results/IGIS")
   final_file <- paste(lay, " 25.Rdata", sep = "") 
   save(spdf, file = final_file)
-  plot(spdf, add = T, pch = ".")
+  plot(spdf, add = T, pch = ".", col = i)
 }
 ```
 
