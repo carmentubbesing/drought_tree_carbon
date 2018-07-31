@@ -13,7 +13,7 @@ require(rgdal)
 
 # Pull up one county and check it
 ```{r}
-setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties")
+setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties/Results_spatial/")
 load("Results_Spatial_Orange.Rdata")
 names(spdf)
 spdf@data <- spdf@data %>% 
@@ -64,7 +64,6 @@ save(spdf, file = "Orange25.Rdata")
 ```{r}
 setwd("~/drought_tree_carbon/drought_tree_carbon/")
 load(file = "data/CA_counties.Rdata")
-to <- "~/drought_tree_carbon/drought_tree_carbon/data/active_unit/"
 sort(counties@data$NAME)
 counties <- counties[counties$NAME != "San Bernardino",]
 plot(counties)
@@ -75,18 +74,7 @@ plot(counties)
 plot(counties)
 for(i in 1:length(counties)){
   print(i)
-  # Remove county from folder
-  active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
-  unlink(active_county, recursive = T)
-  
-  # Save new county to folder active_unit
-  county <- counties[i,]
-  setwd("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
-  lay <- as.character(county@data$NAME)
-  dir.create(lay)
-  print(lay)
-  writeOGR(obj = county, dsn = lay, layer = lay, driver = "ESRI Shapefile")
-  setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties")
+  setwd("~/drought_tree_carbon/drought_tree_carbon/results/Counties/Results_spatial/")
   result_file <- paste("Results_Spatial_", lay, ".Rdata", sep = "")
   load(result_file)
   spdf@data <- spdf@data %>% 
@@ -112,7 +100,7 @@ for(i in 1:length(counties)){
 sb <- c("San Bernardino 1", "San Bernardino 2")
 for(i in c(1,2)){
   lay <- sb[i]
-  result_file <- paste("~/drought_tree_carbon/drought_tree_carbon/results/counties/Results_Spatial_", lay, ".Rdata", sep = "")
+  result_file <- paste("~/drought_tree_carbon/drought_tree_carbon/results/Counties/Results_spatial/Results_Spatial_", lay, ".Rdata", sep = "")
   load(result_file)
   spdf@data <- spdf@data %>% 
     dplyr::select(pixel_key, x, y, D_BM_kg, BM_live_2012_kg, Percent_Mortality_Biomass)
