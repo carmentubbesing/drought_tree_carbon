@@ -27,17 +27,17 @@ plot(counties)
 setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
 ```
 
-## Take out San Bernardino because it's too big to do all at once
+## Take out San Bernardino because it's too big to do all at once and Imperial because Imperial has no dead biomass
 ```{r}
 sb <- counties[counties$NAME == "San Bernardino",]
-counties <- counties[counties$NAME != "San Bernardino",]
+im <- counties[counties$NAME == "Imperial",]
+counties <- counties[!counties$NAME %in% c("San Bernardino","Imperial"),]
 plot(counties)
 ```
 
-
-# Loop the functions over all counties except San Bernardino
+# Loop the functions over all counties except San Bernardino and Imperial
 ```{r}
-for(i in 32:length(counties)){
+for(i in 54:length(counties)){
   print(i)
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
@@ -60,9 +60,45 @@ for(i in 32:length(counties)){
 }
 ```
 
+# Just do live biomass for Imperial county
+
+## Set it up
+```{r}
+print(i)
+active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)
+unlink(active_county, recursive = T)
+county <- im
+setwd("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
+lay <- as.character(county@data$NAME)
+dir.create(lay)
+print(lay)
+writeOGR(obj = county, dsn = lay, layer = lay, driver = "ESRI Shapefile")
+setwd("~/drought_tree_carbon/drought_tree_carbon/code/")
+transform()
+```
+
+## Crop live LEMMA
+```{r}
+print("Cropping LEMMA")
+strt<-Sys.time()
+layer <-list.files("../data/active_unit")
+source("crop_lemma.R")
+crop_lemma()
+print("cropping LEMMA took:")
+print(Sys.time()-strt)
+```
+
+## Calculate live LEMMA biomass
+```{r}
+print("Calculating live biomass")
+strt_live <- Sys.time()
+source("calc_live.R")
+calc_live()
+print("Calculating live biomass took:")
+print(Sys.time()-strt_live)
+```
 
 # Do San Bernardino separately because it's too big for my RAM to do on its own
-
 
 ## Split the San Bernardino polygon into two chunks
 ```{r}
