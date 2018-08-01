@@ -129,7 +129,7 @@ Output Variables
 <td align="left"><code>LEMMA</code></td>
 </tr>
 <tr class="odd">
-<td align="left"><code>relNO_tot</code></td>
+<td align="left"><code>NO_TREES_DEAD</code></td>
 <td align="left">Estimated number of dead trees in pixel</td>
 <td align="left">Number of dead trees from <code>ADS</code> (<code>Pol.NO_TREE</code>), divied up based on <code>live_ratio</code>, which is the ratio of live trees in that pixel to total live trees in the polygon</td>
 </tr>

@@ -85,7 +85,7 @@ Percent loss of number of live trees:	77.78
 | `BPH_GE_25_CRM` | Biomass per hectare of live trees over 25 cm (kg/ha) | `LEMMA` |
 | `FORTYPBA` | Forest type according to basal area | `LEMMA` |
 | `TREEPLBA` | Most common tree species in the pixel according to basal area | `LEMMA` |
-| `relNO_tot` | Estimated number of dead trees in pixel | Number of dead trees from `ADS` (`Pol.NO_TREE`), divied up based on `live_ratio`, which is the ratio of live trees in that pixel to total live trees in the polygon |
+| `NO_TREES_DEAD` | Estimated number of dead trees in pixel | Number of dead trees from `ADS` (`Pol.NO_TREE`), divied up based on `live_ratio`, which is the ratio of live trees in that pixel to total live trees in the polygon |
 | `BM_live_2012_kg` | Biomass of live trees >25 cm in the pixel (kg) | `BPH_GE_25_CRM` multiplied by .09 |
 | `BM_tree_kg` | Estimated biomass per tree for trees >25 cm | `BPH_GE_25_CRM` divided by `TPH_GE_25` |
 | `D_BM_kg` | Estimated biomass of dead trees in the pixel in kg | `LEMMA` & `ADS` |
