@@ -5,7 +5,7 @@ aggregate_pixels <- function(){
   library(tidyverse)
   
   # 1. Load Rdata with points in spdf
-  layer <-list.files("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/")
+  layer <-list.files("../data/active_unit/")
   load(paste("../results/Results_Spatial_", layer, ".Rdata", sep = ""))
   
     ## Ignore pixels with no starting biomass
@@ -28,9 +28,8 @@ aggregate_pixels <- function(){
     ag <- aggregate(raster, fact = 33, fun = sum)
     df <- as.data.frame(ag, xy = T)
     # Save as rasters and .csv
-    setwd("~/drought_tree_carbon/drought_tree_carbon/results/tables_aggregated")
+    setwd("../results")
     write.csv(df, file = paste(layer, "_aggregated", ".csv", sep = ""), row.names = F)
-    setwd("~/drought_tree_carbon/drought_tree_carbon/results/rasters_aggregated/Sierra")
     plot(ag)
     for(i in 5){
       name <- paste(layer, "_",names(ag)[i],".tif",sep="")
