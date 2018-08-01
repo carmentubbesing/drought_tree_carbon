@@ -131,7 +131,7 @@ Output Variables
 <tr class="odd">
 <td align="left"><code>relNO_tot</code></td>
 <td align="left">Estimated number of dead trees in pixel</td>
-<td align="left">Number of dead trees from <code>drought</code> (<code>Pol.NO_TREE</code>), divied up based on <code>live_ratio</code>, which is the ratio of live trees in that pixel to total live trees in the polygon</td>
+<td align="left">Number of dead trees from <code>ADS</code> (<code>Pol.NO_TREE</code>), divied up based on <code>live_ratio</code>, which is the ratio of live trees in that pixel to total live trees in the polygon</td>
 </tr>
 <tr class="even">
 <td align="left"><code>BM_live_2012_kg</code></td>
@@ -146,37 +146,37 @@ Output Variables
 <tr class="even">
 <td align="left"><code>D_BM_kg</code></td>
 <td align="left">Estimated biomass of dead trees in the pixel in kg</td>
-<td align="left"><code>LEMMA</code> &amp; <code>drought</code></td>
+<td align="left"><code>LEMMA</code> &amp; <code>ADS</code></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>D_BM_kgha</code></td>
 <td align="left">Estimated biomass of dead trees in the pixel in kg/ha</td>
-<td align="left"><code>LEMMA</code> &amp; <code>drought</code></td>
+<td align="left"><code>LEMMA</code> &amp; <code>ADS</code></td>
 </tr>
 <tr class="even">
 <td align="left"><code>Pol_2013</code></td>
 <td align="left">ADS Polygon ID for the trees that were recorded dead in 2013</td>
-<td align="left"><code>drought</code></td>
+<td align="left"><code>ADS</code></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>Pol_2014</code></td>
 <td align="left">ADS Polygon ID for the trees that were recorded dead in 2014</td>
-<td align="left"><code>drought</code></td>
+<td align="left"><code>ADS</code></td>
 </tr>
 <tr class="even">
 <td align="left"><code>Pol_2015</code></td>
 <td align="left">ADS Polygon ID for the trees that were recorded dead in 2015</td>
-<td align="left"><code>drought</code></td>
+<td align="left"><code>ADS</code></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>Pol_2016</code></td>
 <td align="left">ADS Polygon ID for the trees that were recorded dead in 2016</td>
-<td align="left"><code>drought</code></td>
+<td align="left"><code>ADS</code></td>
 </tr>
 <tr class="even">
 <td align="left"><code>Pol_2017</code></td>
 <td align="left">ADS Polygon ID for the trees that were recorded dead in 2017</td>
-<td align="left"><code>drought</code></td>
+<td align="left"><code>ADS</code></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>NO_TREES_PX</code></td>
