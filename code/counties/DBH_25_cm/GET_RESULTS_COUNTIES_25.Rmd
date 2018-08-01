@@ -37,7 +37,7 @@ plot(counties)
 
 # Loop the functions over all counties except San Bernardino and Imperial
 ```{r}
-for(i in 54:length(counties)){
+for(i in 1:length(counties)){
   print(i)
   # Remove county from folder
   active_county <- list.dirs("~/drought_tree_carbon/drought_tree_carbon/data/active_unit/", recursive = F)

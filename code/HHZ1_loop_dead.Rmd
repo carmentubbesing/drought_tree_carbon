@@ -1,0 +1,85 @@
+---
+title: "HHZ1_loop"
+author: "Carmen"
+date: "June 12, 2018"
+output: html_document
+---
+
+Goal: classify dead biomass by HHZ1 status
+
+```{r, include = F}
+require(sf)
+require(rgdal)
+require(rgeos)
+require(raster)
+require(doParallel)
+require(dplyr)
+```
+
+# Load data
+
+## dead biomass
+```{r}
+load("~/EastSonora/results/dead40_own.Rdata")
+```
+
+## Load cropped versions of the HHZ data
+```{r}
+setwd("~/EastSonora/data/spatial_data/")
+load(file = "HHZ1_cropped.Rdata")
+```
+
+# Overlay HHZ2 with dead40 biomass
+
+## Match crs's
+```{r}
+HHZ1 <- spTransform(HHZ1, crs(dead40))
+```
+
+# Overlay HHZ1
+
+## Add key column
+```{r}
+HHZ1$key <- seq(1, nrow(HHZ1))
+```
+ 
+## Set up parallel cores for faster runs
+```{r}
+detectCores()
+no_cores <- detectCores() - 2 
+c1 <- makeCluster(no_cores)
+## Establish parallel session
+```
+
+# Pull out a HHZ I know has biomass based on QGIS
+```{r}
+HHZ_known <- HHZ1[HHZ1$Shape_Leng>15875.777 & HHZ1$Shape_Leng<15875.779 & HHZ1$Shape_Area>2573623.509 & HHZ1$Shape_Area<2573623.511,]
+plot(HHZ_known)
+HHZ_known@data
+plot(HHZ1[3262,])
+```
+
+
+# Overlay HHZ1 with dead40 biomass
+```{r}
+registerDoParallel(c1)
+inputs=3261:3280#nrow(HHZ1)
+strt <- Sys.time()
+  
+## Foreach loop using parallel cores:
+
+HHZ1_all <- foreach(i=inputs, .combine = rbind,.packages = c('raster','rgeos','tidyr','dplyr'), .errorhandling=c('stop')) %dopar% {
+  HHZ1i <- HHZ1[i,]
+  in_plots <- as.data.frame(over(HHZ1i, dead40, returnList = T)[[1]][,1])
+  colnames(in_plots) <- "key"
+  return(in_plots)
+}
+print(Sys.time()-strt)
+```
+
+# Save
+```{r}
+save(dead40, file ="~/EastSonora/results/temp/dead40_HHZ1.Rdata")
+setwd("~/EastSonora/results")
+writeOGR(dead40, dsn = "results", "dead40_HHZ", driver = "ESRI Shapefile", overwrite_layer = T)
+```

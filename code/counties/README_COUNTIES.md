@@ -7,6 +7,11 @@ Calculate the biomass of trees that have died in recent drought/insect mortality
 
 This is a spinoff of github.com/WoodResourcesGroup/EPIC\_AllPowerLabs/tree/master/Biomass
 
+Status
+======
+
+As of 7/31/18, running the code for the 25-cm DBH cutoff is complete for all 58 counties. Results are saved in `results/Counties`, with each results file sorted by type.
+
 Script sequence for each of DBH\_3\_cm and DBH\_25\_cm
 ======================================================
 
